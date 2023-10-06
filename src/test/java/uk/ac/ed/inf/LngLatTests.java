@@ -1,14 +1,11 @@
 package uk.ac.ed.inf;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
 import uk.ac.ed.inf.ilp.constant.SystemConstants;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static java.lang.Math.sin;
 import static java.lang.Math.cos;
 import static java.lang.Math.toRadians;
@@ -24,7 +21,7 @@ public class LngLatTests {
         NamedRegion simpleRect = new NamedRegion("simpleRect",vertices);
         LngLat point = new LngLat(2,2);
         boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
-        assertTrue(inRegion);
+        Assertions.assertTrue(inRegion);
     }
 
     @Test
@@ -37,7 +34,7 @@ public class LngLatTests {
         NamedRegion simpleRect = new NamedRegion("simpleRect",vertices);
         LngLat point = new LngLat(5,3);
         boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
-        assertTrue(inRegion);
+        Assertions.assertTrue(inRegion);
     }
     @Test
     void simpleRectangleOutPos(){
@@ -49,7 +46,7 @@ public class LngLatTests {
         NamedRegion simpleRect = new NamedRegion("simpleRect",vertices);
         LngLat point = new LngLat(7,7);
         boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
-        assertTrue(!inRegion);
+        Assertions.assertFalse(inRegion);
     }
 
     @Test
@@ -60,7 +57,7 @@ public class LngLatTests {
         NamedRegion simpleTri = new NamedRegion("simpleTri",vertices);
         LngLat point = new LngLat(2,0);
         boolean inRegion = LngLatTings.isInRegion(point,simpleTri);
-        assert(!inRegion);
+        Assertions.assertFalse(inRegion);
     }
     @Test
     void simpleTriangleOutsidePointRepeatedPoints(){
@@ -71,7 +68,7 @@ public class LngLatTests {
         NamedRegion simpleTri = new NamedRegion("simpleTri",vertices);
         LngLat point = new LngLat(2,0);
         boolean inRegion = LngLatTings.isInRegion(point,simpleTri);
-        assert(!inRegion);
+        Assertions.assertFalse(inRegion);
     }
     @Test
     void simpleRectangleOutNeg(){
@@ -84,7 +81,7 @@ public class LngLatTests {
         NamedRegion simpleRect = new NamedRegion("simpleRect",vertices);
         LngLat point = new LngLat(-1,2);
         boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
-        assertTrue(!inRegion);
+        Assertions.assertFalse(inRegion);
     }
     @Test
     void inBayes(){
@@ -103,7 +100,7 @@ public class LngLatTests {
         NamedRegion BayesCentre = new NamedRegion("Baye's Centre", vertices);
         LngLat point = new LngLat(-3.1874,55.9451);
         boolean inRegion = LngLatTings.isInRegion(point,BayesCentre);
-        assertTrue(inRegion);
+        Assertions.assertTrue(inRegion);
 
     }
     @Test
@@ -123,7 +120,7 @@ public class LngLatTests {
         NamedRegion BayesCentre = new NamedRegion("Baye's Centre", vertices);
         LngLat point = new LngLat(-3.188,55.9451);
         boolean inRegion = LngLatTings.isInRegion(point,BayesCentre);
-        assertTrue(!inRegion);
+        Assertions.assertFalse(inRegion);
 
     }
     @Test
@@ -138,7 +135,7 @@ public class LngLatTests {
         NamedRegion central = new NamedRegion("central", vertices);
         LngLat point = new LngLat(-3.195,55.945);
         boolean inRegion = LngLatTings.isInCentralArea(point,central);
-        assert(!inRegion);
+        Assertions.assertFalse(inRegion);
     }
     @Test
     void inCentralRegion(){
@@ -152,7 +149,7 @@ public class LngLatTests {
         NamedRegion central = new NamedRegion("central", vertices);
         LngLat point = new LngLat(-3.1875,55.945);
         boolean inRegion = LngLatTings.isInCentralArea(point,central);
-        assert(inRegion);
+        Assertions.assertTrue(inRegion);
     }
 
     @Test
@@ -167,7 +164,7 @@ public class LngLatTests {
         NamedRegion central = new NamedRegion("central", vertices);
         LngLat point = new LngLat(-3.192473,55.944);
         boolean inRegion = LngLatTings.isInCentralArea(point,central);
-        assert(inRegion);
+        Assertions.assertTrue(inRegion);
     }
 
     //Helper function to simulate the coordinate tolerance allowed for next position calculations
@@ -184,7 +181,7 @@ public class LngLatTests {
         double angle = 0;
         LngLat expectedFinalPosition = new LngLat(SystemConstants.DRONE_MOVE_DISTANCE,0);
         LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
-        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+        Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
     @Test
@@ -193,7 +190,7 @@ public class LngLatTests {
         double angle = 90;
         LngLat expectedFinalPosition = new LngLat(-3.1874,55.9451+SystemConstants.DRONE_MOVE_DISTANCE);
         LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
-        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+        Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
     @Test
     void move180degrees(){
@@ -201,7 +198,7 @@ public class LngLatTests {
         double angle = 180;
         LngLat expectedFinalPosition = new LngLat(-SystemConstants.DRONE_MOVE_DISTANCE,0);
         LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
-        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+        Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
     @Test
     void move270degrees(){
@@ -209,7 +206,7 @@ public class LngLatTests {
         double angle = 270;
         LngLat expectedFinalPosition = new LngLat(0,-SystemConstants.DRONE_MOVE_DISTANCE);
         LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
-        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+        Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
     @Test
@@ -217,7 +214,7 @@ public class LngLatTests {
         LngLat startPosition = new LngLat(0,0);
         double angle = 999;
         LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
-        assertTrue(pointEquals(startPosition,finalPosition));
+        Assertions.assertTrue(pointEquals(startPosition,finalPosition));
     }
 
     @Test
@@ -226,7 +223,7 @@ public class LngLatTests {
         double angle = 22.5;
         LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(22.5)),0.00015*sin(toRadians(22.5)));
         LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
-        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+        Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
     @Test
@@ -235,7 +232,7 @@ public class LngLatTests {
         double angle = 45;
         LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(45)),0.00015*sin(toRadians(45)));
         LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
-        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+        Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
     @Test
@@ -244,7 +241,7 @@ public class LngLatTests {
         double angle = 67.5;
         LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(67.5)),0.00015*sin(toRadians(67.5)));
         LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
-        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+        Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
     @Test
@@ -256,6 +253,6 @@ public class LngLatTests {
             currentPosition = LngLatTings.nextPosition(currentPosition,angle);
             angle = angle + 22.5;
         }
-        assertTrue(pointEquals(currentPosition,expectedFinalPosition));
+        Assertions.assertTrue(pointEquals(currentPosition,expectedFinalPosition));
     }
 }

@@ -13,7 +13,7 @@ import static java.lang.Math.sin;
 import static java.lang.Math.cos;
 import static java.lang.Math.toRadians;
 import java.math.BigDecimal;
-
+import java.math.RoundingMode;
 
 
 public class LngLatHandler implements LngLatHandling {
@@ -26,7 +26,7 @@ public class LngLatHandler implements LngLatHandling {
     @Override
     public double distanceTo(LngLat startPosition, LngLat endPosition) {
         double lngDiff = startPosition.lng()-endPosition.lng();
-        double latDiff = startPosition.lat()-startPosition.lat();
+        double latDiff = startPosition.lat()-endPosition.lat();
         return sqrt(pow(lngDiff,2)+pow(latDiff,2));
     }
 
@@ -79,8 +79,9 @@ public class LngLatHandler implements LngLatHandling {
         double latDiff = SystemConstants.DRONE_MOVE_DISTANCE*sin(angle);
 
         //Round values consistently
-        lngDiff = new BigDecimal(lngDiff).setScale(13,BigDecimal.ROUND_DOWN).doubleValue();
-        latDiff = new BigDecimal(latDiff).setScale(13,BigDecimal.ROUND_DOWN).doubleValue();
+        lngDiff = new BigDecimal(lngDiff).setScale(13, RoundingMode.HALF_DOWN).doubleValue();
+        latDiff = new BigDecimal(latDiff).setScale(13,RoundingMode.HALF_DOWN).doubleValue();
+
         return new LngLat(startPosition.lng()+lngDiff,startPosition.lat()+latDiff);
     }
 

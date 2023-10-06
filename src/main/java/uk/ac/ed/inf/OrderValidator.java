@@ -19,17 +19,24 @@ public class OrderValidator implements OrderValidation {
 
     @Override
     public Order validateOrder(Order orderToValidate, Restaurant[] definedRestaurants) {
-        //Return order if already validated
-        if (orderToValidate.getOrderValidationCode() != OrderValidationCode.UNDEFINED){
-            return orderToValidate;
-        }
         Pizza[] pizzasInOrder = orderToValidate.getPizzasInOrder();
         CreditCardInformation creditCardInformation = orderToValidate.getCreditCardInformation();
         LocalDate orderDate = orderToValidate.getOrderDate();
         int priceTotalInPence = orderToValidate.getPriceTotalInPence();
-        OrderValidationCode validationCode;
+
+        try {
+            checkForNullData(pizzasInOrder, creditCardInformation, orderDate, definedRestaurants);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        //Return order if already validated
+        if (orderToValidate.getOrderValidationCode() != OrderValidationCode.UNDEFINED){
+            return orderToValidate;
+        }
         //Assume every order passed is initially invalid
         OrderStatus statusCode = OrderStatus.INVALID;
+        OrderValidationCode validationCode;
 
         if (invalidNumberOfPizzas(pizzasInOrder)){
             validationCode = OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED;
@@ -61,11 +68,11 @@ public class OrderValidator implements OrderValidation {
                 statusCode = OrderStatus.VALID_BUT_NOT_DELIVERED;
             }
         }
-        Order validatedOrder = cloneOrderAndAssignCodes(orderToValidate, statusCode, validationCode);
-        return validatedOrder;
+        return cloneOrderAndAssignCodes(orderToValidate, statusCode, validationCode);
     }
 
-    public Order cloneOrderAndAssignCodes(Order orderToValidate, OrderStatus statusCode, OrderValidationCode validationCode) {
+    public Order cloneOrderAndAssignCodes(Order orderToValidate, OrderStatus statusCode,
+                                          OrderValidationCode validationCode) {
         Order validatedOrder = new Order(
                 orderToValidate.getOrderNo(),
                 orderToValidate.getOrderDate(),
@@ -76,6 +83,15 @@ public class OrderValidator implements OrderValidation {
         validatedOrder.setOrderStatus(statusCode);
         validatedOrder.setOrderValidationCode(validationCode);
         return validatedOrder;
+    }
+
+    private void checkForNullData(Pizza[] pizzasInOrder,
+                                  CreditCardInformation creditCardInformation, LocalDate orderDate,
+                                  Restaurant[] definedRestaurants) throws Exception {
+        if (pizzasInOrder == null || creditCardInformation == null
+                || orderDate == null || definedRestaurants == null){
+            throw new Exception("Some order fields are null");
+        }
     }
 
     //Searches for a restaurant that makes all the pizzas in the order
@@ -97,10 +113,7 @@ public class OrderValidator implements OrderValidation {
             List<Pizza> restaurantPizzas = Arrays.asList(restaurant.menu());
             allPizzas.addAll(restaurantPizzas);
         }
-        for(Pizza orderedPizza : orderedPizzas){
-            if (!allPizzas.contains(orderedPizza)) {return true;}
-        }
-        return false;
+        return Arrays.stream(orderedPizzas).anyMatch(orderedPizza -> !allPizzas.contains(orderedPizza));
     }
 
     //Checks if the total in the order matches the true total cost of pizzas and delivery charge
@@ -130,9 +143,8 @@ public class OrderValidator implements OrderValidation {
         int month = Integer.parseInt(expiryParts[0]);
         int year = Integer.parseInt((expiryParts[1]));
 
-       LocalDate expiryDate = LocalDate.of(2000+year,month,1);
-       //Credit cards are valid until the first day of the next month
-       expiryDate = expiryDate.plusMonths(1);
+        //Credit cards are valid until the first day of the next month
+        LocalDate expiryDate = LocalDate.of(2000+year,month,1).plusMonths(1);
 
        return ((expiryDate.isBefore(orderDate)) || (expiryDate.isBefore(LocalDate.now())));
 
