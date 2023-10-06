@@ -3,11 +3,15 @@ import org.junit.jupiter.api.Test;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
+import uk.ac.ed.inf.ilp.constant.SystemConstants;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static java.lang.Math.sin;
+import static java.lang.Math.cos;
+import static java.lang.Math.toRadians;
 public class LngLatTests {
     LngLatHandling LngLatTings = new LngLatHandler();
     @Test
@@ -46,6 +50,28 @@ public class LngLatTests {
         LngLat point = new LngLat(7,7);
         boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
         assertTrue(!inRegion);
+    }
+
+    @Test
+    void simpleTriangleOutsidePointUniquePoints(){
+        LngLat[] vertices = {new LngLat(6,0),
+                            new LngLat(4,2),
+                            new LngLat(8,2)};
+        NamedRegion simpleTri = new NamedRegion("simpleTri",vertices);
+        LngLat point = new LngLat(2,0);
+        boolean inRegion = LngLatTings.isInRegion(point,simpleTri);
+        assert(!inRegion);
+    }
+    @Test
+    void simpleTriangleOutsidePointRepeatedPoints(){
+        LngLat[] vertices = {new LngLat(6,0),
+                new LngLat(4,2),
+                new LngLat(8,2),
+                new LngLat(6,0)};
+        NamedRegion simpleTri = new NamedRegion("simpleTri",vertices);
+        LngLat point = new LngLat(2,0);
+        boolean inRegion = LngLatTings.isInRegion(point,simpleTri);
+        assert(!inRegion);
     }
     @Test
     void simpleRectangleOutNeg(){
@@ -101,7 +127,135 @@ public class LngLatTests {
 
     }
     @Test
-    void inCentralRegion(){
+    void outCentralRegion(){
+        LngLat[] vertices = {
+                new LngLat(-3.192473, 55.946233),
+                new LngLat(-3.192473, 55.942617),
+                new LngLat(-3.184319, 55.942617),
+                new LngLat(-3.184319, 55.946233)
+        };
 
+        NamedRegion central = new NamedRegion("central", vertices);
+        LngLat point = new LngLat(-3.195,55.945);
+        boolean inRegion = LngLatTings.isInCentralArea(point,central);
+        assert(!inRegion);
+    }
+    @Test
+    void inCentralRegion(){
+        LngLat[] vertices = {
+                new LngLat(-3.192473, 55.946233),
+                new LngLat(-3.192473, 55.942617),
+                new LngLat(-3.184319, 55.942617),
+                new LngLat(-3.184319, 55.946233)
+        };
+
+        NamedRegion central = new NamedRegion("central", vertices);
+        LngLat point = new LngLat(-3.1875,55.945);
+        boolean inRegion = LngLatTings.isInCentralArea(point,central);
+        assert(inRegion);
+    }
+
+    @Test
+    void onCentralRegionBorder(){
+        LngLat[] vertices = {
+                new LngLat(-3.192473, 55.946233),
+                new LngLat(-3.192473, 55.942617),
+                new LngLat(-3.184319, 55.942617),
+                new LngLat(-3.184319, 55.946233)
+        };
+
+        NamedRegion central = new NamedRegion("central", vertices);
+        LngLat point = new LngLat(-3.192473,55.944);
+        boolean inRegion = LngLatTings.isInCentralArea(point,central);
+        assert(inRegion);
+    }
+
+    //Helper function to simulate the coordinate tolerance allowed for next position calculations
+    private static boolean pointEquals(LngLat p1, LngLat p2){
+        double tolerance = 1E-12;
+        return (p1.lat() >= p2.lat()-tolerance
+                && p1.lat() <= p2.lat()+tolerance
+                && p1.lng() >= p2.lng()-tolerance
+                && p1.lng() <= p2.lng()+tolerance);
+    }
+    @Test
+    void move0degrees(){
+        LngLat startPosition = new LngLat(0,0);
+        double angle = 0;
+        LngLat expectedFinalPosition = new LngLat(SystemConstants.DRONE_MOVE_DISTANCE,0);
+        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+    }
+
+    @Test
+    void move90degrees(){
+        LngLat startPosition = new LngLat(-3.1874,55.9451);
+        double angle = 90;
+        LngLat expectedFinalPosition = new LngLat(-3.1874,55.9451+SystemConstants.DRONE_MOVE_DISTANCE);
+        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+    }
+    @Test
+    void move180degrees(){
+        LngLat startPosition = new LngLat(0,0);
+        double angle = 180;
+        LngLat expectedFinalPosition = new LngLat(-SystemConstants.DRONE_MOVE_DISTANCE,0);
+        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+    }
+    @Test
+    void move270degrees(){
+        LngLat startPosition = new LngLat(0,0);
+        double angle = 270;
+        LngLat expectedFinalPosition = new LngLat(0,-SystemConstants.DRONE_MOVE_DISTANCE);
+        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+    }
+
+    @Test
+    void hover(){
+        LngLat startPosition = new LngLat(0,0);
+        double angle = 999;
+        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        assertTrue(pointEquals(startPosition,finalPosition));
+    }
+
+    @Test
+    void move22_5degrees(){
+        LngLat startPosition = new LngLat(0,0);
+        double angle = 22.5;
+        LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(22.5)),0.00015*sin(toRadians(22.5)));
+        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+    }
+
+    @Test
+    void move45degrees(){
+        LngLat startPosition = new LngLat(0,0);
+        double angle = 45;
+        LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(45)),0.00015*sin(toRadians(45)));
+        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+    }
+
+    @Test
+    void move67_5degrees(){
+        LngLat startPosition = new LngLat(0,0);
+        double angle = 67.5;
+        LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(67.5)),0.00015*sin(toRadians(67.5)));
+        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        assertTrue(pointEquals(expectedFinalPosition,finalPosition));
+    }
+
+    @Test
+    void moveInCicrleIn16Steps(){
+        LngLat currentPosition = new LngLat(0,0);
+        LngLat expectedFinalPosition = new LngLat(0,0);
+        double angle = 0;
+        for (int i=0;i<16;i++){
+            currentPosition = LngLatTings.nextPosition(currentPosition,angle);
+            angle = angle + 22.5;
+        }
+        assertTrue(pointEquals(currentPosition,expectedFinalPosition));
     }
 }
