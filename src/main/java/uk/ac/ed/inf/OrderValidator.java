@@ -9,7 +9,6 @@ import uk.ac.ed.inf.ilp.data.Pizza;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 import uk.ac.ed.inf.ilp.interfaces.OrderValidation;
 
-
 import java.util.*;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -18,6 +17,12 @@ import java.util.stream.Collectors;
 
 public class OrderValidator implements OrderValidation {
 
+    /**
+     * Validates and order by checking all fields
+     * @param orderToValidate Order object
+     * @param definedRestaurants Array of Restaurant objects
+     * @return Order object with updated validation and status codes
+     */
     @Override
     public Order validateOrder(Order orderToValidate, Restaurant[] definedRestaurants) {
         Pizza[] pizzasInOrder = orderToValidate.getPizzasInOrder();
@@ -25,6 +30,7 @@ public class OrderValidator implements OrderValidation {
         LocalDate orderDate = orderToValidate.getOrderDate();
         int priceTotalInPence = orderToValidate.getPriceTotalInPence();
 
+        //Check for null data input
         try {
             checkForNullData(pizzasInOrder, creditCardInformation, orderDate, definedRestaurants);
         } catch (Exception e) {
@@ -73,6 +79,14 @@ public class OrderValidator implements OrderValidation {
         return cloneOrderAndAssignCodes(orderToValidate, statusCode, validationCode);
     }
 
+    /**
+     * Used to return a cloned order after validation
+     * @param orderToValidate Order object to be cloned
+     * @param statusCode OrderStatus enum to be assigned to cloned Order
+     * @param validationCode OrderValidationCode enum to be assigned to cloned Order
+     * @return Clone of orderToValidate with statusCode and validationCode
+     * set to their relevant field
+     */
     public Order cloneOrderAndAssignCodes(Order orderToValidate, OrderStatus statusCode,
                                           OrderValidationCode validationCode) {
         Order validatedOrder = new Order(
@@ -87,6 +101,14 @@ public class OrderValidator implements OrderValidation {
         return validatedOrder;
     }
 
+    /**
+     * Helper method to validate whether order data exists
+     * @param pizzasInOrder Array of Pizza objects from orderToValidate
+     * @param creditCardInformation CreditCardInformation object from orderToValidate
+     * @param orderDate LocalDate of the orderDate from orderToValidate
+     * @param definedRestaurants Array of Restaurant objects from orderToValidate
+     * @throws Exception which corresponds to which field is identified null
+     */
     private void checkForNullData(Pizza[] pizzasInOrder,
                                   CreditCardInformation creditCardInformation, LocalDate orderDate,
                                   Restaurant[] definedRestaurants) throws Exception {
@@ -104,7 +126,12 @@ public class OrderValidator implements OrderValidation {
         }
     }
 
-    //Searches for a restaurant that makes all the pizzas in the order
+    /**
+     * Searches for a restaurant that makes all the pizzas in the order
+     * @param pizzas Array of Pizza objects in the order
+     * @param restaurants Array of restaurants that are defined in the system
+     * @return A Restaurant object that makes all pizzas in the order or null if it does not exist
+     */
     private Restaurant findValidRestaurant(Pizza[] pizzas, Restaurant[] restaurants){
         Set<Pizza> pizzaSet = new HashSet<>(Arrays.asList(pizzas));
         for (Restaurant restaurant : restaurants){
@@ -116,12 +143,23 @@ public class OrderValidator implements OrderValidation {
         return null;
     }
 
-    //Checks if the pizzas in the order exist on the menus of any restaurant
+    /**
+     * Checks if the pizzas in the order exist on the menus of any restaurant
+     * @param orderedPizzas Array of pizza objects in the order
+     * @param allPizzas Map of all pizza names found in restaurant menus and prices
+     * @return True if a Pizza in orderedPizzas does not have a name that can be found in allPizzas
+     */
     private boolean orderedPizzasDontExist(Pizza[] orderedPizzas, Map<String,Integer> allPizzas){
         Set<String> allPizzaNames = allPizzas.keySet();
         return Arrays.stream(orderedPizzas).anyMatch(orderedPizza -> !allPizzaNames.contains(orderedPizza.name()));
     }
 
+    /**
+     * Compiles all the pizzas available in the system
+     * @param restaurants Array of defined restaurants in the system
+     * @return A Map containing all pizzas made by all restaurants. With pizza names as keys
+     *         and their price as values
+     */
     private Map<String,Integer> getAllDefinedPizzas(Restaurant[] restaurants){
         Set<Pizza> allPizzas = new HashSet<>();
         for(Restaurant restaurant : restaurants) {
@@ -131,7 +169,15 @@ public class OrderValidator implements OrderValidation {
         return allPizzas.stream().collect(Collectors.toMap(Pizza::name,Pizza::priceInPence));
     }
 
-    //Checks if the total in the order matches the true total cost of pizzas and delivery charge
+
+    /**
+     * Checks if the total in the order matches the true total cost of pizzas and delivery charge
+     * @param priceTotalInPence int of the total price listed by an order
+     * @param pizzasInOrder Array of Pizza objects in the order
+     * @param allPizzas Map of all pizza names and their prices
+     * @return True if the total found in the order is not equal to the true total
+     *         of pizza prices and the devliery charge
+     */
     private boolean totalIsIncorrect(int priceTotalInPence, Pizza[] pizzasInOrder,
                                      Map<String, Integer> allPizzas){
         int trueTotal = SystemConstants.ORDER_CHARGE_IN_PENCE;
@@ -140,39 +186,72 @@ public class OrderValidator implements OrderValidation {
         }
         return priceTotalInPence != trueTotal;
     }
-    //Returns true if day of week of the order date is on a day the restaurant is closed
+    /**
+     * Checks if the given restaurant is closed on the day of the order
+     * @param orderDate LocalDate object of the order date
+     * @param restaurant Restaurant object of a restaurant that can make all the pizzas listed
+     *                   in the order
+     * @return True if the restaurant is closed on the day of the week of the order date
+     */
     private boolean restaurantIsClosed(LocalDate orderDate, Restaurant restaurant){
         return Arrays.stream(restaurant.openingDays()).noneMatch(orderDate.getDayOfWeek()::equals);
     }
 
-    // Returns true if the number of pizzas exceeds the max carrying capacity of drone
+
+    /**
+     * Checks whether an invalid number of pizzas is ordered
+     * @param pizzasInOrder Array of Pizza objects attached to the order
+     * @return True if too many (>4) pizzas are ordered
+     */
     private boolean invalidNumberOfPizzas(Pizza[] pizzasInOrder){
         return pizzasInOrder.length > 4;
     }
 
-    // Returns true if the credit card expired before the order date and current date
+    /**
+     * Checks if the credit card expiry is invalid
+     * @param creditCardExpiry String of credit card expiry date
+     * @param orderDate LocalDate object of the order date
+     * @return True if creditCardExpiry represents a date after the orderDate
+     */
     private boolean invalidCCExpiry(String creditCardExpiry, LocalDate orderDate){
-        if (!creditCardExpiry.contains("/")){
+        //First check for format of MM/YY
+        String expiryPattern = "[\\d{2}]/[\\d{2}]";
+        Pattern reg = Pattern.compile(expiryPattern);
+        Matcher matcher = reg.matcher(creditCardExpiry);
+        if (!matcher.matches()){
             return true;
         }
         String[] expiryParts = creditCardExpiry.split("/");
         int month = Integer.parseInt(expiryParts[0]);
         int year = Integer.parseInt((expiryParts[1]));
-
+        //Check if month value is valid
+        if (month > 12){
+            return false;
+        }
         //Credit cards are valid until the first day of the next month
         LocalDate expiryDate = LocalDate.of(2000+year,month,1).plusMonths(1);
-
        return ((expiryDate.isBefore(orderDate)) || (expiryDate.isBefore(LocalDate.now())));
 
     }
-    //Checks if Credit Card Number is not a string of 16 digits
+
+    /**
+     * Checks if a credit card number is not valid
+     * @param creditCardNumber String of a credit card number
+     * @return True if creditCardNumber is not valid (not a string of 16 digits)
+     */
     private boolean invalidCCNumber(String creditCardNumber){
         String ccNumPattern = "\\d{16}";
         Pattern reg = Pattern.compile(ccNumPattern);
         Matcher matcher = reg.matcher(creditCardNumber);
         return !matcher.matches();
     }
+
     //Checks if CVV number is not a string of 16 digits
+    /**
+     * Checks if a CVV is not valid
+     * @param cvv String of a CVV number
+     * @return True if CVV is not valid (not a string of 3 digits)
+     */
     private boolean invalidCVV(String cvv){
         String cvvPattern = "\\d{3}";
         Pattern reg = Pattern.compile(cvvPattern);
