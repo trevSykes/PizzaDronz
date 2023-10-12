@@ -10,7 +10,7 @@ import static java.lang.Math.sin;
 import static java.lang.Math.cos;
 import static java.lang.Math.toRadians;
 public class LngLatTests {
-    LngLatHandling LngLatTings = new LngLatHandler();
+    LngLatHandling lngLatHandler = new LngLatHandler();
     @Test
     void simpleRectangleIN(){
         LngLat[] vertices = {new LngLat(0,0),
@@ -20,7 +20,7 @@ public class LngLatTests {
                             new LngLat(0,0)};
         NamedRegion simpleRect = new NamedRegion("simpleRect",vertices);
         LngLat point = new LngLat(2,2);
-        boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
+        boolean inRegion = lngLatHandler.isInRegion(point,simpleRect);
         Assertions.assertTrue(inRegion);
     }
 
@@ -33,7 +33,7 @@ public class LngLatTests {
                 new LngLat(0,0)};
         NamedRegion simpleRect = new NamedRegion("simpleRect",vertices);
         LngLat point = new LngLat(5,3);
-        boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
+        boolean inRegion = lngLatHandler.isInRegion(point,simpleRect);
         Assertions.assertTrue(inRegion);
     }
     @Test
@@ -45,7 +45,7 @@ public class LngLatTests {
                 new LngLat(0,0)};
         NamedRegion simpleRect = new NamedRegion("simpleRect",vertices);
         LngLat point = new LngLat(7,7);
-        boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
+        boolean inRegion = lngLatHandler.isInRegion(point,simpleRect);
         Assertions.assertFalse(inRegion);
     }
 
@@ -56,9 +56,10 @@ public class LngLatTests {
                             new LngLat(8,2)};
         NamedRegion simpleTri = new NamedRegion("simpleTri",vertices);
         LngLat point = new LngLat(2,0);
-        boolean inRegion = LngLatTings.isInRegion(point,simpleTri);
+        boolean inRegion = lngLatHandler.isInRegion(point,simpleTri);
         Assertions.assertFalse(inRegion);
     }
+
     @Test
     void simpleTriangleOutsidePointRepeatedPoints(){
         LngLat[] vertices = {new LngLat(6,0),
@@ -67,7 +68,7 @@ public class LngLatTests {
                 new LngLat(6,0)};
         NamedRegion simpleTri = new NamedRegion("simpleTri",vertices);
         LngLat point = new LngLat(2,0);
-        boolean inRegion = LngLatTings.isInRegion(point,simpleTri);
+        boolean inRegion = lngLatHandler.isInRegion(point,simpleTri);
         Assertions.assertFalse(inRegion);
     }
     @Test
@@ -80,7 +81,7 @@ public class LngLatTests {
 
         NamedRegion simpleRect = new NamedRegion("simpleRect",vertices);
         LngLat point = new LngLat(-1,2);
-        boolean inRegion = LngLatTings.isInRegion(point,simpleRect);
+        boolean inRegion = lngLatHandler.isInRegion(point,simpleRect);
         Assertions.assertFalse(inRegion);
     }
     @Test
@@ -99,7 +100,7 @@ public class LngLatTests {
 
         NamedRegion BayesCentre = new NamedRegion("Baye's Centre", vertices);
         LngLat point = new LngLat(-3.1874,55.9451);
-        boolean inRegion = LngLatTings.isInRegion(point,BayesCentre);
+        boolean inRegion = lngLatHandler.isInRegion(point,BayesCentre);
         Assertions.assertTrue(inRegion);
 
     }
@@ -119,7 +120,7 @@ public class LngLatTests {
 
         NamedRegion BayesCentre = new NamedRegion("Baye's Centre", vertices);
         LngLat point = new LngLat(-3.188,55.9451);
-        boolean inRegion = LngLatTings.isInRegion(point,BayesCentre);
+        boolean inRegion = lngLatHandler.isInRegion(point,BayesCentre);
         Assertions.assertFalse(inRegion);
 
     }
@@ -134,7 +135,7 @@ public class LngLatTests {
 
         NamedRegion central = new NamedRegion("central", vertices);
         LngLat point = new LngLat(-3.195,55.945);
-        boolean inRegion = LngLatTings.isInCentralArea(point,central);
+        boolean inRegion = lngLatHandler.isInCentralArea(point,central);
         Assertions.assertFalse(inRegion);
     }
     @Test
@@ -148,7 +149,82 @@ public class LngLatTests {
 
         NamedRegion central = new NamedRegion("central", vertices);
         LngLat point = new LngLat(-3.1875,55.945);
-        boolean inRegion = LngLatTings.isInCentralArea(point,central);
+        boolean inRegion = lngLatHandler.isInCentralArea(point,central);
+        Assertions.assertTrue(inRegion);
+    }
+
+    @Test
+    void onEastCentralBorder(){
+        LngLat[] vertices = {
+                new LngLat(-3.192473, 55.946233),
+                new LngLat(-3.192473, 55.942617),
+                new LngLat(-3.184319, 55.942617),
+                new LngLat(-3.184319, 55.946233)
+        };
+
+        NamedRegion central = new NamedRegion("central", vertices);
+        LngLat point = new LngLat(-3.192473,55.944);
+        boolean inRegion = lngLatHandler.isInCentralArea(point,central);
+        Assertions.assertTrue(inRegion);
+    }
+
+    @Test
+    void onSouthCentralBorder(){
+        LngLat[] vertices = {
+                new LngLat(-3.192473, 55.946233),
+                new LngLat(-3.192473, 55.942617),
+                new LngLat(-3.184319, 55.942617),
+                new LngLat(-3.184319, 55.946233)
+        };
+
+        NamedRegion central = new NamedRegion("central", vertices);
+        LngLat point = new LngLat(-3.188,55.942617);
+        boolean inRegion = lngLatHandler.isInCentralArea(point,central);
+        Assertions.assertTrue(inRegion);
+    }
+
+    @Test
+    void onWestCentralBorder(){
+        LngLat[] vertices = {
+                new LngLat(-3.192473, 55.946233),
+                new LngLat(-3.192473, 55.942617),
+                new LngLat(-3.184319, 55.942617),
+                new LngLat(-3.184319, 55.946233)
+        };
+
+        NamedRegion central = new NamedRegion("central", vertices);
+        LngLat point = new LngLat(-3.184319,55.944);
+        boolean inRegion = lngLatHandler.isInCentralArea(point,central);
+        Assertions.assertTrue(inRegion);
+    }
+
+    @Test
+    void onNorthCentralBorder(){
+        LngLat[] vertices = {
+                new LngLat(-3.192473, 55.946233),
+                new LngLat(-3.192473, 55.942617),
+                new LngLat(-3.184319, 55.942617),
+                new LngLat(-3.184319, 55.946233)
+        };
+
+        NamedRegion central = new NamedRegion("central", vertices);
+        LngLat point = new LngLat(-3.189,55.946233);
+        boolean inRegion = lngLatHandler.isInCentralArea(point,central);
+        Assertions.assertTrue(inRegion);
+    }
+
+    @Test
+    void onCentralVertex(){
+        LngLat[] vertices = {
+                new LngLat(-3.192473, 55.946233),
+                new LngLat(-3.192473, 55.942617),
+                new LngLat(-3.184319, 55.942617),
+                new LngLat(-3.184319, 55.946233)
+        };
+
+        NamedRegion central = new NamedRegion("central", vertices);
+        LngLat point = new LngLat(-3.184319, 55.946233);
+        boolean inRegion = lngLatHandler.isInCentralArea(point,central);
         Assertions.assertTrue(inRegion);
     }
 
@@ -163,7 +239,7 @@ public class LngLatTests {
 
         NamedRegion central = new NamedRegion("central", vertices);
         LngLat point = new LngLat(-3.192473,55.944);
-        boolean inRegion = LngLatTings.isInCentralArea(point,central);
+        boolean inRegion = lngLatHandler.isInCentralArea(point,central);
         Assertions.assertTrue(inRegion);
     }
 
@@ -180,7 +256,7 @@ public class LngLatTests {
         LngLat startPosition = new LngLat(0,0);
         double angle = 0;
         LngLat expectedFinalPosition = new LngLat(SystemConstants.DRONE_MOVE_DISTANCE,0);
-        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        LngLat finalPosition = lngLatHandler.nextPosition(startPosition,angle);
         Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
@@ -189,7 +265,7 @@ public class LngLatTests {
         LngLat startPosition = new LngLat(-3.1874,55.9451);
         double angle = 90;
         LngLat expectedFinalPosition = new LngLat(-3.1874,55.9451+SystemConstants.DRONE_MOVE_DISTANCE);
-        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        LngLat finalPosition = lngLatHandler.nextPosition(startPosition,angle);
         Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
     @Test
@@ -197,7 +273,7 @@ public class LngLatTests {
         LngLat startPosition = new LngLat(0,0);
         double angle = 180;
         LngLat expectedFinalPosition = new LngLat(-SystemConstants.DRONE_MOVE_DISTANCE,0);
-        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        LngLat finalPosition = lngLatHandler.nextPosition(startPosition,angle);
         Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
     @Test
@@ -205,7 +281,7 @@ public class LngLatTests {
         LngLat startPosition = new LngLat(0,0);
         double angle = 270;
         LngLat expectedFinalPosition = new LngLat(0,-SystemConstants.DRONE_MOVE_DISTANCE);
-        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        LngLat finalPosition = lngLatHandler.nextPosition(startPosition,angle);
         Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
@@ -213,7 +289,7 @@ public class LngLatTests {
     void hover(){
         LngLat startPosition = new LngLat(0,0);
         double angle = 999;
-        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        LngLat finalPosition = lngLatHandler.nextPosition(startPosition,angle);
         Assertions.assertTrue(pointEquals(startPosition,finalPosition));
     }
 
@@ -222,7 +298,7 @@ public class LngLatTests {
         LngLat startPosition = new LngLat(0,0);
         double angle = 22.5;
         LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(22.5)),0.00015*sin(toRadians(22.5)));
-        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        LngLat finalPosition = lngLatHandler.nextPosition(startPosition,angle);
         Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
@@ -231,7 +307,7 @@ public class LngLatTests {
         LngLat startPosition = new LngLat(0,0);
         double angle = 45;
         LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(45)),0.00015*sin(toRadians(45)));
-        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        LngLat finalPosition = lngLatHandler.nextPosition(startPosition,angle);
         Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
@@ -240,7 +316,7 @@ public class LngLatTests {
         LngLat startPosition = new LngLat(0,0);
         double angle = 67.5;
         LngLat expectedFinalPosition = new LngLat(0.00015*cos(toRadians(67.5)),0.00015*sin(toRadians(67.5)));
-        LngLat finalPosition = LngLatTings.nextPosition(startPosition,angle);
+        LngLat finalPosition = lngLatHandler.nextPosition(startPosition,angle);
         Assertions.assertTrue(pointEquals(expectedFinalPosition,finalPosition));
     }
 
@@ -250,7 +326,7 @@ public class LngLatTests {
         LngLat expectedFinalPosition = new LngLat(0,0);
         double angle = 0;
         for (int i=0;i<16;i++){
-            currentPosition = LngLatTings.nextPosition(currentPosition,angle);
+            currentPosition = lngLatHandler.nextPosition(currentPosition,angle);
             angle = angle + 22.5;
         }
         Assertions.assertTrue(pointEquals(currentPosition,expectedFinalPosition));

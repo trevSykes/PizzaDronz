@@ -14,6 +14,7 @@ import java.util.*;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class OrderValidator implements OrderValidation {
 
@@ -38,7 +39,14 @@ public class OrderValidator implements OrderValidation {
         OrderStatus statusCode = OrderStatus.INVALID;
         OrderValidationCode validationCode;
 
-        if (invalidNumberOfPizzas(pizzasInOrder)){
+        Map<String, Integer> allDefinedPizzas = getAllDefinedPizzas(definedRestaurants);
+
+        if (orderedPizzasDontExist(pizzasInOrder, allDefinedPizzas)){
+            validationCode = OrderValidationCode.PIZZA_NOT_DEFINED;
+        } else if (totalIsIncorrect(priceTotalInPence, pizzasInOrder, allDefinedPizzas)) {
+            validationCode = OrderValidationCode.TOTAL_INCORRECT;
+        }
+        else if (invalidNumberOfPizzas(pizzasInOrder)){
             validationCode = OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED;
         }
         else if (invalidCCNumber(creditCardInformation.getCreditCardNumber())){
@@ -49,12 +57,6 @@ public class OrderValidator implements OrderValidation {
         }
         else if (invalidCVV(creditCardInformation.getCvv())){
             validationCode = OrderValidationCode.CVV_INVALID;
-        }
-        else if (totalIsIncorrect(priceTotalInPence,pizzasInOrder)){
-            validationCode = OrderValidationCode.TOTAL_INCORRECT;
-        }
-        else if (orderedPizzasDontExist(pizzasInOrder,definedRestaurants)){
-            validationCode = OrderValidationCode.PIZZA_NOT_DEFINED;
         } else{
             //Looks for a restaurant that serves all the pizzas specified in order
             Restaurant validRestaurant = findValidRestaurant(pizzasInOrder,definedRestaurants);
@@ -88,9 +90,17 @@ public class OrderValidator implements OrderValidation {
     private void checkForNullData(Pizza[] pizzasInOrder,
                                   CreditCardInformation creditCardInformation, LocalDate orderDate,
                                   Restaurant[] definedRestaurants) throws Exception {
-        if (pizzasInOrder == null || creditCardInformation == null
-                || orderDate == null || definedRestaurants == null){
-            throw new Exception("Some order fields are null");
+        if (pizzasInOrder == null) {
+            throw new Exception("Pizzas in order is null. Cannot validate order. Check inputs.");
+        }
+        if (creditCardInformation == null) {
+            throw new Exception("Credit card information is null. Cannot validate order. Check inputs.");
+        }
+        if (orderDate == null) {
+            throw new Exception("Order date is null. Cannot validate order. Check inputs.");
+        }
+        if (definedRestaurants == null) {
+            throw new Exception("Defined restaurants are null. Cannot validate order. Check inputs.");
         }
     }
 
@@ -107,22 +117,28 @@ public class OrderValidator implements OrderValidation {
     }
 
     //Checks if the pizzas in the order exist on the menus of any restaurant
-    private boolean orderedPizzasDontExist(Pizza[] orderedPizzas, Restaurant[] restaurants){
+    private boolean orderedPizzasDontExist(Pizza[] orderedPizzas, Map<String,Integer> allPizzas){
+        Set<String> allPizzaNames = allPizzas.keySet();
+        return Arrays.stream(orderedPizzas).anyMatch(orderedPizza -> !allPizzaNames.contains(orderedPizza.name()));
+    }
+
+    private Map<String,Integer> getAllDefinedPizzas(Restaurant[] restaurants){
         Set<Pizza> allPizzas = new HashSet<>();
         for(Restaurant restaurant : restaurants) {
             List<Pizza> restaurantPizzas = Arrays.asList(restaurant.menu());
             allPizzas.addAll(restaurantPizzas);
         }
-        return Arrays.stream(orderedPizzas).anyMatch(orderedPizza -> !allPizzas.contains(orderedPizza));
+        return allPizzas.stream().collect(Collectors.toMap(Pizza::name,Pizza::priceInPence));
     }
 
     //Checks if the total in the order matches the true total cost of pizzas and delivery charge
-    private boolean totalIsIncorrect(int priceTotalInPence,Pizza[] pizzas){
+    private boolean totalIsIncorrect(int priceTotalInPence, Pizza[] pizzasInOrder,
+                                     Map<String, Integer> allPizzas){
         int trueTotal = SystemConstants.ORDER_CHARGE_IN_PENCE;
-        for(Pizza pizza : pizzas){
-            trueTotal += pizza.priceInPence();
+        for (Pizza pizza : pizzasInOrder){
+            trueTotal += allPizzas.get(pizza.name());
         }
-        return trueTotal != priceTotalInPence;
+        return priceTotalInPence != trueTotal;
     }
     //Returns true if day of week of the order date is on a day the restaurant is closed
     private boolean restaurantIsClosed(LocalDate orderDate, Restaurant restaurant){
@@ -134,7 +150,7 @@ public class OrderValidator implements OrderValidation {
         return pizzasInOrder.length > 4;
     }
 
-    // Returns true if the credit card expired before the orderdate and current date
+    // Returns true if the credit card expired before the order date and current date
     private boolean invalidCCExpiry(String creditCardExpiry, LocalDate orderDate){
         if (!creditCardExpiry.contains("/")){
             return true;

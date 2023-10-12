@@ -89,7 +89,8 @@ public class OrderValidationTests {
         Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.VALID_BUT_NOT_DELIVERED,OrderValidationCode.NO_ERROR);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertTrue(orderEquals(expectedValidatedOrder,validatedOrder));
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+
     }
 
     @Test
@@ -209,7 +210,7 @@ public class OrderValidationTests {
                 new Pizza("Super Cheese", 1400),
                 new Pizza("Super Cheese", 1400),
                 new Pizza("All Shrooms", 900)});
-        baseValidOrder.setPriceTotalInPence(6500);
+        baseValidOrder.setPriceTotalInPence(6600);
 
         Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode. MAX_PIZZA_COUNT_EXCEEDED);
