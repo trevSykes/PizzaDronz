@@ -13,7 +13,7 @@ public class App
         System.out.println( "Hello World! -- First commit!" );
         System.out.println("Small test for IlpDataObjects");
 
-        OrderStatus orderStatus = OrderStatus.DELIVERED;
+        var orderStatus = OrderStatus.DELIVERED;
 
         System.out.println("Success!");
 
