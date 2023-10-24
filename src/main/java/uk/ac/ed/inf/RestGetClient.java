@@ -12,13 +12,15 @@ import java.util.Objects;
 
 public class RestGetClient {
     /* URL constants for each resource */
-    static final String RESTAURANTS_URL = "https://ilp-rest.azurewebsites.net/restaurants";
-    static final String ORDERS_URL = "https://ilp-rest.azurewebsites.net/orders";
-    static final String NO_FLY_URL = "https://ilp-rest.azurewebsites.net/noFlyZones";
-    static final String CENTRAL_URL = "https://ilp-rest.azurewebsites.net/centralArea";
-    static final String IS_ALIVE_URL = "https://ilp-rest.azurewebsites.net/isAlive";
+    static final String RESTAURANTS_LOC = "/restaurants";
+    static final String ORDERS_LOC = "/orders/";
+    static final String NO_FLY_LOC = "/noFlyZones";
+    static final String CENTRAL_LOC = "/centralArea";
+    static final String IS_ALIVE_LOC = "/isAlive";
     private static ObjectMapper mapper;
-    public RestGetClient(){
+    private static String baseURL;
+    public RestGetClient(String restURL){
+        baseURL = restURL;
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule()); //Required for parsing LocalDate objects
     }
@@ -29,7 +31,7 @@ public class RestGetClient {
      */
     public Restaurant[] getRestaurants(){
         try{
-            return mapper.readValue(new URL(RESTAURANTS_URL), Restaurant[].class);
+            return mapper.readValue(new URL(baseURL+ RESTAURANTS_LOC), Restaurant[].class);
         } catch (IOException e){
             System.err.println("Error with retrieving REST server's restaurant resource");
             e.printStackTrace();
@@ -44,7 +46,7 @@ public class RestGetClient {
      */
     public boolean restIsAlive(){
         try{
-            return Objects.equals(mapper.readValue(new URL(IS_ALIVE_URL), String.class), "true");
+            return Objects.equals(mapper.readValue(new URL(baseURL+IS_ALIVE_LOC), String.class), "true");
         } catch (IOException e) {
             System.err.println("Issue with checking REST server is online");
             e.printStackTrace();
@@ -59,9 +61,9 @@ public class RestGetClient {
      */
     public Order[] getOrders(String date){
         try{
-            return mapper.readValue(new URL(ORDERS_URL+"/"+date), Order[].class);
+            return mapper.readValue(new URL(baseURL+ORDERS_LOC+date), Order[].class);
         } catch (IOException e){
-            System.err.println("Error with retrieving REST server's Orders resource");
+            System.err.println("Error with parsing REST server's Orders resource");
             e.printStackTrace();
             //TODO: Gracefully die
             return null;
@@ -74,9 +76,9 @@ public class RestGetClient {
      */
     public NamedRegion[] getNoFlyZones(){
         try{
-            return mapper.readValue(new URL(NO_FLY_URL), NamedRegion[].class);
+            return mapper.readValue(new URL(baseURL+NO_FLY_LOC), NamedRegion[].class);
         } catch (IOException e){
-            System.err.println("Error with retrieving REST server's NoFlyZone resource");
+            System.err.println("Error with parsing REST server's NoFlyZone resource");
             e.printStackTrace();
             //TODO: Gracefully die
             return null;
@@ -89,9 +91,9 @@ public class RestGetClient {
      */
     public NamedRegion getCentralArea(){
         try{
-            return mapper.readValue(new URL(CENTRAL_URL), NamedRegion.class);
+            return mapper.readValue(new URL(baseURL+CENTRAL_LOC), NamedRegion.class);
         } catch (IOException e){
-            System.err.println("Error with retrieving REST server's CentralArea resource");
+            System.err.println("Error with parsing REST server's CentralArea resource");
             e.printStackTrace();
             //TODO: Gracefully die and possibly do more comprehensive logging
             return null;

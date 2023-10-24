@@ -16,7 +16,7 @@ public class RestGetTest {
 
     @BeforeAll
     static void setUpData(){
-        restClient = new RestGetClient();
+        restClient = new RestGetClient("https://ilp-rest.azurewebsites.net");
         Restaurant civerinos = new Restaurant("Civerinos Slice",
                 new LngLat(-3.1912869215011597, 55.945535152517735),
                 new DayOfWeek[] { DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.FRIDAY,
@@ -86,5 +86,10 @@ public class RestGetTest {
             allEquals = allEquals && restaurantEquals(retrievedRestaurants[i],definedRestaurants[i]);
         }
         Assertions.assertTrue(allEquals);
+    }
+
+    @Test
+    void isRESTAlive(){
+        Assertions.assertTrue(restClient.restIsAlive());
     }
 }
