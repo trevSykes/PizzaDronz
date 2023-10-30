@@ -93,6 +93,7 @@ public class LngLatHandler implements LngLatHandling {
                 }
                 intersectionCount++;
             }
+            edge = null; //TODO delete if not useful
         }
         //If test ray intersects edges an odd number of times then the point is in
         return intersectionCount % 2 == 1;
@@ -115,8 +116,8 @@ public class LngLatHandler implements LngLatHandling {
         double latDiff = SystemConstants.DRONE_MOVE_DISTANCE*sin(angle);
 
         //Round values consistently
-        lngDiff = new BigDecimal(lngDiff).setScale(13, RoundingMode.HALF_DOWN).doubleValue();
-        latDiff = new BigDecimal(latDiff).setScale(13,RoundingMode.HALF_DOWN).doubleValue();
+//        lngDiff = new BigDecimal(lngDiff).setScale(13,RoundingMode.HALF_DOWN).doubleValue();
+//        latDiff = new BigDecimal(latDiff).setScale(13,RoundingMode.HALF_DOWN).doubleValue();
 
         return new LngLat(startPosition.lng()+lngDiff,startPosition.lat()+latDiff);
     }
