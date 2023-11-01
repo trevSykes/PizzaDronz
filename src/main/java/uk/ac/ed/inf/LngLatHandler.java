@@ -67,36 +67,63 @@ public class LngLatHandler implements LngLatHandling {
      * @param region NamedRegion object
      * @return True if position is within region
      */
+//    @Override
+//    public boolean isInRegion(LngLat position, NamedRegion region) {
+//        if (region == null) {
+//            throw new IllegalArgumentException("The named region is null");
+//        }
+//        LngLat[] vertices = region.vertices();
+//        int n = vertices.length;
+//        //Checks if region is a valid polygon
+//        if (n < 3){
+//            return false;
+//        }
+//        LngLat inf = new LngLat(99999,position.lat());
+//        //Draw an edge from point to infinity on latitude
+////        Ray testRay = new Ray(position,inf);
+//        int intersectionCount = 0;
+//        for (int i=0;i<vertices.length;i++){
+////            //Draw an edge between adjacent vertices
+////            Ray edge = new Ray(vertices[i],vertices[(i+1)%n]);
+//            if (intersecting(vertices[i],vertices[(i+1)%n],position,inf)){
+//                //Edge case: point is collinear with region vertices
+//                if(orientation(vertices[i],position,vertices[(i+1)%n])==COLLINEAR){
+//                    //Point is in region if point is on edge
+//                    return rayContainsPoint(vertices[i],vertices[(i+1)%n],position);
+//                }
+//                intersectionCount++;
+//            }
+//        }
+//        //If test ray intersects edges an odd number of times then the point is in
+//        return intersectionCount % 2 == 1;
+//    }
     @Override
     public boolean isInRegion(LngLat position, NamedRegion region) {
-        if (region == null) {
-            throw new IllegalArgumentException("The named region is null");
-        }
-        LngLat[] vertices = region.vertices();
-        int n = vertices.length;
-        //Checks if region is a valid polygon
-        if (n < 3){
-            return false;
-        }
-        LngLat inf = new LngLat(99999,position.lat());
-        //Draw an edge from point to infinity on latitude
-        Ray testRay = new Ray(position,inf);
-        int intersectionCount = 0;
-        for (int i=0;i<vertices.length;i++){
-            //Draw an edge between adjacent vertices
-            Ray edge = new Ray(vertices[i],vertices[(i+1)%n]);
-            if (intersecting(edge,testRay)){
-                //Edge case: point is collinear with region vertices
-                if(orientation(edge.p1,position,edge.p2)==COLLINEAR){
-                    //Point is in region if point is on edge
-                    return edge.hasPoint(position);
-                }
-                intersectionCount++;
+        LngLat[] polygon = region.vertices();
+        boolean odd = false;
+
+        for (int i = 0, j = polygon.length - 1; i < polygon.length; i++) {
+            // Check if point is a vertex
+            if (position.lat() == polygon[i].lat() && position.lng() == polygon[i].lng()) {
+                return true;
             }
-            edge = null; //TODO delete if not useful
+
+            // Check if point is on an edge
+            if (position.lng() > Math.min(polygon[i].lng(), polygon[j].lng()) && position.lng() <= Math.max(polygon[i].lng(), polygon[j].lng())) {
+                double slope = (polygon[j].lat() - polygon[i].lat()) / (polygon[j].lng() - polygon[i].lng());
+                double expectedLat = slope * (position.lng() - polygon[i].lng()) + polygon[i].lat();
+                if (position.lat() == expectedLat) {
+                    return true;
+                }
+            }
+            // Get ray-casting intercepts
+            if ((polygon[i].lat() > position.lat()) != (polygon[j].lat() > position.lat()) &&
+                    (position.lng() < (polygon[j].lng() - polygon[i].lng()) * (position.lat() - polygon[i].lat()) / (polygon[j].lat() - polygon[i].lat()) + polygon[i].lng())) {
+                odd = !odd;
+            }
+            j = i;
         }
-        //If test ray intersects edges an odd number of times then the point is in
-        return intersectionCount % 2 == 1;
+        return odd;
     }
 
     /**
@@ -125,19 +152,19 @@ public class LngLatHandler implements LngLatHandling {
     /**
      * Class used to represent a test ray and polygon edges used in inRegion
      */
-    private static class Ray {
-        public LngLat p1, p2;
-        public Ray(LngLat p1, LngLat p2){
-            this.p1 = p1;
-            this.p2 = p2;
-        }
-        public boolean hasPoint(LngLat p){
-            return ((p.lng() <= max(p1.lng(), p2.lng()))
-                    && (p.lng()) >= min(p1.lng(), p2.lng())
-                    && (p.lat() <= max(p1.lat(), p2.lat()))
-                    && (p.lat() >= min(p1.lat(), p2.lat())));
-        }
-    }
+//    private static class Ray {
+//        public LngLat p1, p2;
+//        public Ray(LngLat p1, LngLat p2){
+//            this.p1 = p1;
+//            this.p2 = p2;
+//        }
+//        public boolean hasPoint(LngLat p){
+//            return ((p.lng() <= max(p1.lng(), p2.lng()))
+//                    && (p.lng()) >= min(p1.lng(), p2.lng())
+//                    && (p.lat() <= max(p1.lat(), p2.lat()))
+//                    && (p.lat() >= min(p1.lat(), p2.lat())));
+//        }
+//    }
 
     /**
      * Determines the orientation of three ordered points pA,pB,pC
@@ -159,27 +186,36 @@ public class LngLatHandler implements LngLatHandling {
         }
     }
 
+    private static boolean rayContainsPoint(LngLat ray_1, LngLat ray_2, LngLat p){
+        return ((p.lng() <= max(ray_1.lng(), ray_2.lng()))
+                && (p.lng()) >= min(ray_1.lng(), ray_2.lng())
+                && (p.lat() <= max(ray_1.lat(), ray_2.lat()))
+                && (p.lat() >= min(ray_1.lat(), ray_2.lat())));
+    }
+
     /**
      * Source:  <a href="https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/">...</a>
-     * @param r1 Ray object which could be either test ray or polygon edge
-     * @param r2 Ray object which could be either test ray or polygon edge
-     * @return True if r1 and r2 are intersecting
+     * @param rayA_1
+     * @param rayA_2
+     * @param rayB_1
+     * @param rayB_2
+     * @return
      */
-    private static boolean intersecting(Ray r1, Ray r2){
-        int o1 = orientation(r1.p1,r1.p2,r2.p1); //Orientation of r2.point1 wrt to r1
-        int o2 = orientation(r1.p1,r1.p2,r2.p2); //Orientation of r2.point2 wrt to r2
+    private static boolean intersecting(LngLat rayA_1, LngLat rayA_2, LngLat rayB_1, LngLat rayB_2){
+        int o1 = orientation(rayA_1,rayA_2,rayB_1); //Orientation of r2.point1 wrt to r1
+        int o2 = orientation(rayA_1,rayA_2,rayB_2); //Orientation of r2.point2 wrt to r2
 
-        int o3 = orientation(r2.p1,r2.p2,r1.p1); //Orientation of r1.point1 wrt to r2
-        int o4 = orientation(r2.p1,r2.p2,r1.p2); //Orientation of r1.point2 wrt to r2
+        int o3 = orientation(rayB_1,rayB_2,rayA_1); //Orientation of r1.point1 wrt to r2
+        int o4 = orientation(rayB_1,rayB_2,rayA_2); //Orientation of r1.point2 wrt to r2
 
         /*
         Edge cases: Any point on one ray that is collinear with the points of another ray and that
         point lies on the other ray then the rays intersect.
          */
-        if (o1 == COLLINEAR && r1.hasPoint(r2.p1)){return true;}
-        if (o2 == COLLINEAR && r1.hasPoint(r2.p2)){return true;}
-        if (o3 == COLLINEAR && r2.hasPoint(r1.p1)){return true;}
-        if (o4 == COLLINEAR && r2.hasPoint(r1.p2)){return true;}
+        if (o1 == COLLINEAR && rayContainsPoint(rayA_1,rayA_2,rayB_1)){return true;}
+        if (o2 == COLLINEAR && rayContainsPoint(rayA_1,rayA_2,rayB_2)){return true;}
+        if (o3 == COLLINEAR && rayContainsPoint(rayB_1,rayB_2,rayA_1)){return true;}
+        if (o4 == COLLINEAR && rayContainsPoint(rayB_1,rayB_2,rayA_2)){return true;}
 
         /*
         If the orientations of either point of a ray wrt to another ray are not the same then rays
