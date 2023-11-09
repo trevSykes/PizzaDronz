@@ -7,198 +7,240 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import java.util.*;
 
 public class PathFinder {
+    private final LngLat AT = new LngLat(-3.186874,55.944494);
+    private final LngLatHandler lngLatHandler;
+    private String currentOrderID;
+    private Node currentPathEnd;
 
-    private static final LngLat AT = new LngLat(-3.186874,55.944494);
-    private static final double NULL_ANGLE = 5000;
-    private static LngLatHandler lngLatHandler;
-
-    private static NamedRegion[] noFlyZones;
-
-    private static NamedRegion centralArea;
-
-    private static LngLat currentGoal;
-
-    public PathFinder(NamedRegion[] noFlyZones, NamedRegion centralArea){
-        lngLatHandler = new LngLatHandler();
-        this.noFlyZones = noFlyZones;
-        this.centralArea = centralArea;
-
+    public PathFinder(){
+        this.lngLatHandler = new LngLatHandler();
     }
 
-    public String findPath(String orderID, LngLat start, LngLat goal){
-        currentGoal = goal;
-        Node startNode = new Node(null, NULL_ANGLE, start);
+    /**
+     * Uses A* search to find an optimal path from the start LngLat to the end LngLat while avoiding No-Fly Zones and
+     * not leaving the Central Area once it enters when the goal is Appleton Tower
+     * @param orderID String of the orderID that is being currently delivered
+     * @param start LngLat of the start position
+     * @param goal LngLat of the end position
+     * @param noFlyZones Array of NamedRegion representing No-Fly Zones
+     * @param centralArea NamedRegion of the Central Area
+     * @return List of DroneMoves representing the flightpath
+     * @throws RuntimeException Pathfinding failed when open list no longer contains any nodes
+     */
+    public List<DroneMove> findPath(String orderID, LngLat start, LngLat goal,NamedRegion[] noFlyZones,
+                                    NamedRegion centralArea) throws RuntimeException{
+        //Initialise start node
+        //Used for a start node's prevAngleField
+        double NULL_ANGLE = -1;
+        Node startNode = new Node(null, NULL_ANGLE, start, lngLatHandler.isInCentralArea(start, centralArea));
         startNode.g = 0;
-        startNode.f = startNode.g + lngLatHandler.distanceTo(start,goal);
+        startNode.f = lngLatHandler.distanceTo(start,goal);
 
+        //Initialise openList data structures
         PriorityQueue<Node> openList = new PriorityQueue<>();
-        Map<LngLat, Double> bestCostInOpen = new HashMap<>();
-        Map<LngLat, Double> bestCostInClosed = new HashMap<>();
+        Map<LngLat, Double> bestInOpen = new HashMap<>();
+        //Initialise closed list data structure
+        Map<LngLat, Double> bestInClosed = new HashMap<>();
 
-        long timeForSuccessorGeneration = 0;
-        long timeSpentCheckingOpenClosedList =0;
 
         openList.add(startNode);
+
         while (!openList.isEmpty()){
-
+            //Take node with the lowest estimated total path cost
             Node q = openList.poll();
-            long startGen = System.currentTimeMillis();
-            List<Node> qSuccessors = generateLegalSuccessors(q);
-            long endGen = System.currentTimeMillis();
-            timeForSuccessorGeneration += (endGen-startGen);
-
-            System.out.println("Current pos exploring ["+q.pos.lng()+","+q.pos.lat()+"]");
-
-            for (Node successor : qSuccessors){
-                //Return the path if the successor is the goal state
-                if (lngLatHandler.isCloseTo(successor.pos,currentGoal)){
-                    System.out.println("Path found!");
-                    System.out.println("Time taken to generate successors in ms: "+timeForSuccessorGeneration);
-                    System.out.println("Time taken to search open and closed list is in ms: "+timeSpentCheckingOpenClosedList);
-
-//                    return reconstructPath(orderID, successor);
-                    return reconstructPathForGeojson(successor);
-//                    return successor.toString();
+            for (Node successor : generateSuccessors(q,goal,centralArea,noFlyZones,
+                    bestInOpen.keySet(),bestInClosed.keySet())){
+                if (successor == null) break;
+                //If successor is close to the goal then a path is found
+                if(lngLatHandler.isCloseTo(successor.pos,goal)){
+                    currentOrderID=orderID;
+                    currentPathEnd=successor;
+                    return getCurrentPathMoves();
                 }
+                //Update successor node f and g score
                 successor.g = q.g + SystemConstants.DRONE_MOVE_DISTANCE;
                 successor.f = successor.g + lngLatHandler.distanceTo(successor.pos,goal);
-
-//                long startTime = System.currentTimeMillis();
-//                long endTime;
-//                if (openListContainsBetterPos(successor,openList)
-//                || closedListContainsBetterPos(successor,closedList)){
-//                    endTime = System.currentTimeMillis();
-//                    continue;
-//                }
-//                endTime = System.currentTimeMillis();
-//                timeSpentCheckingOpenClosedList += (endTime-startTime);
-                long startTime = System.currentTimeMillis();
-                long endTime;
-                if (bestCostInOpen.containsKey(successor.pos) && bestCostInOpen.get(successor.pos) < successor.f) {
-                    endTime = System.currentTimeMillis();
-                    timeSpentCheckingOpenClosedList += (endTime-startTime);
-                    successor = null;
+                //Skip successor if a node in the closed list has the same position and has a better f score
+                if(bestInClosed.containsKey(successor.pos) && bestInClosed.get(successor.pos) < successor.f){
                     continue;
                 }
-                if (bestCostInClosed.containsKey(successor.pos) && bestCostInClosed.get(successor.pos) < successor.f){
-                    endTime = System.currentTimeMillis();
-                    timeSpentCheckingOpenClosedList += (endTime-startTime);
-                    successor = null;
+                //Skip successor if a node in the open list has the same position and has a better f score
+                if(bestInOpen.containsKey(successor.pos) && bestInOpen.get(successor.pos) < successor.f){
                     continue;
                 }
-                endTime = System.currentTimeMillis();
-                timeSpentCheckingOpenClosedList += (endTime-startTime);
-
+                //Add node to open list to be explored
                 openList.add(successor);
-                if (bestCostInOpen.containsKey(successor.pos)){
-                    bestCostInOpen.replace(successor.pos, successor.f);
+                //Add to or update open list map
+                if (bestInOpen.containsKey(successor.pos)){
+                    bestInOpen.replace(successor.pos, successor.f);
                 } else{
-                    bestCostInOpen.put(successor.pos, successor.f);
+                    bestInOpen.put(successor.pos, successor.f);
                 }
             }
-            if (bestCostInClosed.containsKey(q.pos)){
-                bestCostInClosed.replace(q.pos, q.f);
+            //Add to or update closed list
+            if (bestInClosed.containsKey(q.pos)){
+                bestInClosed.replace(q.pos, q.f);
             } else{
-                bestCostInClosed.put(q.pos, q.f);
+                bestInClosed.put(q.pos, q.f);
             }
-            q = null;
         }
-
-        return null;
+        throw new RuntimeException(String.format("Pathfinder failed for Order: %s",orderID));
     }
 
-//    private List<DroneMove> reconstructPath(String orderID, Node goalNode){
-//        List<DroneMove> path = new ArrayList<>();
-//        Node current = goalNode;
-//        int totalTicks = (int) (goalNode.g() / SystemConstants.DRONE_MOVE_DISTANCE);
-//        while (current.previous().previous() != null){
-//            path.add(current.convertToMove(orderID, totalTicks));
-//            totalTicks--;
-//        }
-//        return path;
-//    }
 
-    private static String reconstructPathForGeojson(Node goalNode){
-        long startTime = System.currentTimeMillis();
-        String path = "";
-        Node current = goalNode;
-        while (current.previous != null){
-            path += ("["+current.pos.lng()+","+current.pos.lat()+"],");
+    /**
+     * Clears the currentPathEnd and currentOrderID fields
+     */
+    public void clearCurrentPath(){
+        currentPathEnd = null;
+        currentOrderID = null;
+    }
+
+    /**
+     * Reconstructs path using the current path's end node
+     * @return List of DroneMove objects
+     */
+    public List<DroneMove> getCurrentPathMoves(){
+        List<DroneMove> moves = new ArrayList<>();
+        Node current = currentPathEnd;
+        while(current.previous.previous != null){
+            moves.add(current.convertToMove(currentOrderID));
             current = current.previous;
         }
-        path += ("["+current.pos.lng()+","+current.pos.lat()+"],");
-        long endTime = System.currentTimeMillis();
-        System.out.println("Getting coordinates took in ms:"+(endTime-startTime));
-        return path;
+        Collections.reverse(moves);
+        return moves;
     }
 
-    private static List<Node> generateLegalSuccessors(Node q){
+    /**
+     *
+     * @return A DroneMove that represents the drone hovering over its currentPath's end location
+     */
+    public DroneMove makeHoverMove(){
+        double HOVER_ANGLE = 999;
+        LngLat hoverPos = lngLatHandler.nextPosition(currentPathEnd.pos, HOVER_ANGLE);
+        return new DroneMove(currentOrderID, currentPathEnd.pos.lng(), currentPathEnd.pos.lat(), HOVER_ANGLE,
+                hoverPos.lng(), hoverPos.lat());
+    }
+
+
+    /**
+     * Generates a list of nodes that are the legal successors to q
+     * @param q Node that has successors generated from
+     * @param goal LngLat of goal, used for Central Area flightpath requirement
+     * @param centralArea NamedRegion of the Central Ara
+     * @param noFlyZones Array of NamedRegions representing the No-Fly Zones
+     * @param openListPoints Set of LngLat positions of nodes in the open set
+     * @param closedListPoints Set of LngLat positions of nodes in the closed set
+     * @return List of Nodes that are the legal successors to q
+     */
+    private List<Node> generateSuccessors(Node q, LngLat goal,NamedRegion centralArea,NamedRegion[] noFlyZones,
+                                      Set<LngLat> openListPoints, Set<LngLat> closedListPoints) {
         List<Node> successors = new ArrayList<>();
-        for (double angle = 0; angle<360; angle += 22.5){
+        //Check for all 16 possible compass directions
+        for(double angle = 0; angle<360 ; angle += 22.5){
             LngLat nextPos = lngLatHandler.nextPosition(q.pos,angle);
-            if (posInNoFlyZones(nextPos,noFlyZones)){
+            //Prune positions that are close to existing nodes
+            if(positionIsCloseToExistingNode(nextPos,openListPoints,closedListPoints)){
                 continue;
             }
-//            boolean isInCentral = lngLatHandler.isInCentralArea(nextPos,centralArea);
-//            if (q.previous != null && goalIsAppleton() && q.previous.inCentral && !isInCentral){
-//                continue;
-//            }
-            Node sucessorNode = new Node(q,angle,nextPos);
-            successors.add(sucessorNode);
+            //Skip if in a no fly zone
+            if(posIsInNoFlyZone(nextPos,noFlyZones)){
+                continue;
+            }
+            //Skip if path between q and nextPos goes through a No-Fly Zone
+            if(lngLatHandler.pathGoesThroughNoFlyZones(q.pos,nextPos,noFlyZones)){
+                continue;
+            }
+            //Skip if possible path fails central area requirement
+            boolean nextIsInCentral = lngLatHandler.isInCentralArea(nextPos,centralArea);
+            if(goalIsAT(goal) && q.inCentral && !nextIsInCentral){
+                continue;
+            }
+            successors.add(new Node(q, angle, nextPos, nextIsInCentral));
         }
         return successors;
     }
 
-    private static boolean posInNoFlyZones(LngLat pos, NamedRegion[] noFlyZones){
-        for (NamedRegion noFlyZone : noFlyZones){
-            if (lngLatHandler.isInRegion(pos,noFlyZone)){
+    /**
+     *
+     * @param nextPos LngLat of a possible successor being generated
+     * @param openList Set of LngLat positions of nodes in the open list
+     * @param closedList Set of LngLat positions of nodes in the closed list
+     * @return True if nextPos is <(0.75*DRONE_IS_CLOSE_DISTANCE) from existing nodes
+     */
+    private boolean positionIsCloseToExistingNode(LngLat nextPos, Set<LngLat> openList, Set<LngLat> closedList){
+        for(LngLat closedListPos : closedList){
+            if(lngLatHandler.isVeryCloseTo(nextPos,closedListPos)){
+                return true;
+            }
+        }
+        for(LngLat openListPos : openList){
+            if(lngLatHandler.isVeryCloseTo(nextPos,openListPos)){
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean goalIsAppleton(LngLat goal){
-        return (goal.lng() == AT.lng()) && (goal.lat() == AT.lat());
+    /**
+     *
+     * @param goal LngLat of the end location of the path
+     * @return True if the goal is Appleton Tower
+     */
+    private boolean goalIsAT(LngLat goal){
+        return ((goal.lng() == AT.lng()) && (goal.lat() == AT.lat()));
     }
 
-    //Deprecated?
-//    private List<DroneMove> convertNodesToMoves(List<Node> path,String orderID){
-//        int tick = 1;
-//        List<DroneMove> moves = new ArrayList<>();
-//        for (Node node : path){
-//            if (node.previous == null){
-//                continue;
-//            }
-//            moves.add(new DroneMove(orderID,
-//                                    node.previous.pos.lng(),
-//                                    node.previous.pos.lat(),
-//                                    node.angleFromPrev,
-//                                    node.pos.lng(),
-//                                    node.pos.lat(),
-//                                    tick));
-//            tick++;
-//        }
-//        return moves;
-//    }
+    /**
+     *
+     * @param pos LngLat position of a potential successor node
+     * @param noFlyZones Array of NamedRegion objects representing No-FLy Zones
+     * @return True if the position is in a No-FLy Zone
+     */
+    private boolean posIsInNoFlyZone(LngLat pos,NamedRegion[] noFlyZones){
+        for(NamedRegion noFlyZone : noFlyZones){
+            if(lngLatHandler.isInRegion(pos,noFlyZone)){
+                return true;
+            }
+        }
+        return false;
+    }
 
-    public double[] TestArrayForNodeComparable(){
-        Node n1 = new Node(null, 1000,null);
-        n1.f = 1;
-        Node n2 = new Node(null, 1000,null);
-        n2.f = 2;
-        Node n3 = new Node(null, 1000,null);
-        n3.f = 3;
-        Node n4 = new Node(null, 1000,null);
-        n4.f = 4;
+    //Node class used in A* search
+    private static class Node implements Comparable<Node>{
+        private final Node previous;
+        private final double angleFromPrev;
+        private final LngLat pos;
+        private double f;
+        private double g;
+        private final boolean inCentral;
 
-        Node[] unSortedArray = new Node[]{n3,n4,n2,n1};
-        Arrays.sort(unSortedArray);
-        double[] fVals = new double[]{unSortedArray[0].f,
-                        unSortedArray[1].f,
-                        unSortedArray[2].f,
-                        unSortedArray[3].f};
-        return fVals;
+        private Node(Node previous, double angleFromPrev, LngLat pos, boolean inCentral){
+            this.previous = previous;
+            this.angleFromPrev = angleFromPrev;
+            this.pos = pos;
+            this.inCentral = inCentral;
+        }
+
+        /**
+         *
+         * @param orderID String of the current orderID being delivered
+         * @return DroneMove object that represents moving from the node's previous to the node
+         */
+        private DroneMove convertToMove(String orderID){
+            return new DroneMove(orderID,
+                    this.previous.pos.lng(),
+                    this.previous.pos.lat(),
+                    this.angleFromPrev,
+                    this.pos.lng(),
+                    this.pos.lat());
+        }
+
+        @Override
+        public int compareTo(Node o) {
+            return Double.compare(this.f, o.f);
+        }
+
     }
     }
 

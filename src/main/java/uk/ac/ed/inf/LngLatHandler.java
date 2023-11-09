@@ -51,6 +51,16 @@ public class LngLatHandler implements LngLatHandling {
     }
 
     /**
+     * Used in PathFinder.java to prune successors that are very close to existing nodes
+     * @param pos1 LngLat object
+     * @param pos2 LngLat object
+     * @return True if pos1 and pos2 are < SystemConstants.DRONE_IS_CLOSE_DISTANCE * 0.75
+     */
+    public boolean isVeryCloseTo(LngLat pos1, LngLat pos2) {
+        return distanceTo(pos1,pos2) < (SystemConstants.DRONE_IS_CLOSE_DISTANCE * 0.75);
+    }
+
+    /**
      * Uses isInRegion on point for the central area
      * @param point LngLat of point in question
      * @param centralArea NamedRegion object
@@ -67,63 +77,32 @@ public class LngLatHandler implements LngLatHandling {
      * @param region NamedRegion object
      * @return True if position is within region
      */
-//    @Override
-//    public boolean isInRegion(LngLat position, NamedRegion region) {
-//        if (region == null) {
-//            throw new IllegalArgumentException("The named region is null");
-//        }
-//        LngLat[] vertices = region.vertices();
-//        int n = vertices.length;
-//        //Checks if region is a valid polygon
-//        if (n < 3){
-//            return false;
-//        }
-//        LngLat inf = new LngLat(99999,position.lat());
-//        //Draw an edge from point to infinity on latitude
-////        Ray testRay = new Ray(position,inf);
-//        int intersectionCount = 0;
-//        for (int i=0;i<vertices.length;i++){
-////            //Draw an edge between adjacent vertices
-////            Ray edge = new Ray(vertices[i],vertices[(i+1)%n]);
-//            if (intersecting(vertices[i],vertices[(i+1)%n],position,inf)){
-//                //Edge case: point is collinear with region vertices
-//                if(orientation(vertices[i],position,vertices[(i+1)%n])==COLLINEAR){
-//                    //Point is in region if point is on edge
-//                    return rayContainsPoint(vertices[i],vertices[(i+1)%n],position);
-//                }
-//                intersectionCount++;
-//            }
-//        }
-//        //If test ray intersects edges an odd number of times then the point is in
-//        return intersectionCount % 2 == 1;
-//    }
     @Override
     public boolean isInRegion(LngLat position, NamedRegion region) {
-        LngLat[] polygon = region.vertices();
-        boolean odd = false;
-
-        for (int i = 0, j = polygon.length - 1; i < polygon.length; i++) {
-            // Check if point is a vertex
-            if (position.lat() == polygon[i].lat() && position.lng() == polygon[i].lng()) {
-                return true;
-            }
-
-            // Check if point is on an edge
-            if (position.lng() > Math.min(polygon[i].lng(), polygon[j].lng()) && position.lng() <= Math.max(polygon[i].lng(), polygon[j].lng())) {
-                double slope = (polygon[j].lat() - polygon[i].lat()) / (polygon[j].lng() - polygon[i].lng());
-                double expectedLat = slope * (position.lng() - polygon[i].lng()) + polygon[i].lat();
-                if (position.lat() == expectedLat) {
-                    return true;
-                }
-            }
-            // Get ray-casting intercepts
-            if ((polygon[i].lat() > position.lat()) != (polygon[j].lat() > position.lat()) &&
-                    (position.lng() < (polygon[j].lng() - polygon[i].lng()) * (position.lat() - polygon[i].lat()) / (polygon[j].lat() - polygon[i].lat()) + polygon[i].lng())) {
-                odd = !odd;
-            }
-            j = i;
+        LngLat[] vertices = region.vertices();
+        int n = vertices.length;
+        //Checks if region is a valid polygon
+        if (n < 3){
+            return false;
         }
-        return odd;
+        LngLat inf = new LngLat(99999,position.lat());
+        //Draw an edge from point to infinity on latitude
+        LineSegment testRay = new LineSegment(position,inf);
+        int intersectionCount = 0;
+        for (int i=0;i<vertices.length;i++){
+            //Draw an edge between adjacent vertices
+            LineSegment edge = new LineSegment(vertices[i],vertices[(i+1)%n]);
+            if (lines_intersect(edge,testRay)){
+                //Edge case: point is collinear with region vertices
+                if(orientation(vertices[i],position,vertices[(i+1)%n])==COLLINEAR){
+                    //Point is in region if point is on edge
+                    return edge.contains(position);
+                }
+                intersectionCount++;
+            }
+        }
+        //If test ray intersects edges an odd number of times then the point is in
+        return intersectionCount % 2 == 1;
     }
 
     /**
@@ -143,36 +122,19 @@ public class LngLatHandler implements LngLatHandling {
         double latDiff = SystemConstants.DRONE_MOVE_DISTANCE*sin(angle);
 
         //Round values consistently
-//        lngDiff = new BigDecimal(lngDiff).setScale(13,RoundingMode.HALF_DOWN).doubleValue();
-//        latDiff = new BigDecimal(latDiff).setScale(13,RoundingMode.HALF_DOWN).doubleValue();
+        lngDiff = new BigDecimal(lngDiff).setScale(13,RoundingMode.HALF_DOWN).doubleValue();
+        latDiff = new BigDecimal(latDiff).setScale(13,RoundingMode.HALF_DOWN).doubleValue();
 
         return new LngLat(startPosition.lng()+lngDiff,startPosition.lat()+latDiff);
     }
 
     /**
-     * Class used to represent a test ray and polygon edges used in inRegion
-     */
-//    private static class Ray {
-//        public LngLat p1, p2;
-//        public Ray(LngLat p1, LngLat p2){
-//            this.p1 = p1;
-//            this.p2 = p2;
-//        }
-//        public boolean hasPoint(LngLat p){
-//            return ((p.lng() <= max(p1.lng(), p2.lng()))
-//                    && (p.lng()) >= min(p1.lng(), p2.lng())
-//                    && (p.lat() <= max(p1.lat(), p2.lat()))
-//                    && (p.lat() >= min(p1.lat(), p2.lat())));
-//        }
-//    }
-
-    /**
-     * Determines the orientation of three ordered points pA,pB,pC
+     * Determines the orientation of three ordered points pA, pB, pC
      * Source: <a href="https://www.geeksforgeeks.org/orientation-3-ordered-points/">...</a>
      * @param pA LngLat point
      * @param pB LngLat point
      * @param pC LngLat point
-     * @return Enum representing oreintation of the ordered points
+     * @return Enum representing orientation of the ordered points
      */
     private static int orientation(LngLat pA, LngLat pB, LngLat pC){
         double calc = (pB.lat()-pA.lat()) * (pC.lng() - pB.lng())
@@ -186,42 +148,80 @@ public class LngLatHandler implements LngLatHandling {
         }
     }
 
-    private static boolean rayContainsPoint(LngLat ray_1, LngLat ray_2, LngLat p){
-        return ((p.lng() <= max(ray_1.lng(), ray_2.lng()))
-                && (p.lng()) >= min(ray_1.lng(), ray_2.lng())
-                && (p.lat() <= max(ray_1.lat(), ray_2.lat()))
-                && (p.lat() >= min(ray_1.lat(), ray_2.lat())));
-    }
-
     /**
+     * Determines whether two line segments intersect given their start and end LngLat positions
      * Source:  <a href="https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/">...</a>
-     * @param rayA_1
-     * @param rayA_2
-     * @param rayB_1
-     * @param rayB_2
-     * @return
+     * @param line1 LineSegment object
+     * @param line2 LineSegment object
+     * @return True if the line segments intersect
      */
-    private static boolean intersecting(LngLat rayA_1, LngLat rayA_2, LngLat rayB_1, LngLat rayB_2){
-        int o1 = orientation(rayA_1,rayA_2,rayB_1); //Orientation of r2.point1 wrt to r1
-        int o2 = orientation(rayA_1,rayA_2,rayB_2); //Orientation of r2.point2 wrt to r2
-
-        int o3 = orientation(rayB_1,rayB_2,rayA_1); //Orientation of r1.point1 wrt to r2
-        int o4 = orientation(rayB_1,rayB_2,rayA_2); //Orientation of r1.point2 wrt to r2
+    private static boolean lines_intersect(LineSegment line1, LineSegment line2){
+        int o1 = orientation(line1.start,line1.end,line2.start);
+        int o2 = orientation(line1.start,line1.end, line2.end);
+        int o3 = orientation(line2.start,line2.end,line1.start);
+        int o4 = orientation(line2.start,line2.end,line1.end);
 
         /*
-        Edge cases: Any point on one ray that is collinear with the points of another ray and that
-        point lies on the other ray then the rays intersect.
+        Edge cases: Any point P of a line segment that is collinear with the start and end points of the other line
+        segment and the other line segment contains P then the line segments intersect
          */
-        if (o1 == COLLINEAR && rayContainsPoint(rayA_1,rayA_2,rayB_1)){return true;}
-        if (o2 == COLLINEAR && rayContainsPoint(rayA_1,rayA_2,rayB_2)){return true;}
-        if (o3 == COLLINEAR && rayContainsPoint(rayB_1,rayB_2,rayA_1)){return true;}
-        if (o4 == COLLINEAR && rayContainsPoint(rayB_1,rayB_2,rayA_2)){return true;}
+        if (o1 == COLLINEAR && line1.contains(line2.start)){return true;}
+        if (o2 == COLLINEAR && line1.contains(line2.end)){return true;}
+        if (o3 == COLLINEAR && line2.contains(line1.start)){return true;}
+        if (o4 == COLLINEAR && line2.contains(line1.end)){return true;}
 
         /*
         If the orientations of either point of a ray wrt to another ray are not the same then rays
         intersect
          */
         return (o1 != o2 && o3 != o4);
+    }
+
+    /**
+     * Determines whether a possible path between two points goes through a No-Fly Zone
+     * @param p1 LngLat of the start of the possible path
+     * @param p2 LngLat of the end of the possible path
+     * @param noFlyZones Array of NamedRegion objects representing No-Fly Zones
+     * @return True if the path between p1 and p2 go through a No-Fly Zone edge
+     */
+    public boolean pathGoesThroughNoFlyZones(LngLat p1, LngLat p2, NamedRegion[] noFlyZones){
+        LineSegment pathSegment = new LineSegment(p1,p2);
+        for(NamedRegion noFlyZone : noFlyZones){
+            LngLat[] vertices = noFlyZone.vertices();
+            int n = vertices.length;
+            for(int i=0;i<n;i++){
+                //Make edge of noFLyZone
+                LineSegment noFlyZoneEdge = new LineSegment(vertices[i],vertices[(i+1)%n]);
+                if(lines_intersect(pathSegment,noFlyZoneEdge)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Represents testRay for isInRegion or edges of zones
+     */
+    private class LineSegment {
+        private final LngLat start;
+        private final LngLat end;
+        private LineSegment(LngLat start, LngLat end){
+            this.start = start;
+            this.end = end;
+        }
+
+        /**
+         *
+         * @param point LngLat of a point
+         * @return True if the line segment contains the point
+         */
+        private boolean contains(LngLat point){
+            return ((point.lng() <= max(start.lng(), end.lng()))
+                    && (point.lng()) >= min(start.lng(), end.lng())
+                    && (point.lat() <= max(start.lat(), end.lat()))
+                    && (point.lat() >= min(start.lat(), end.lat())));
+        }
     }
 
 }

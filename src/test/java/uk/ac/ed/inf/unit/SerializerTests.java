@@ -1,7 +1,8 @@
-package uk.ac.ed.inf;
+package uk.ac.ed.inf.unit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import uk.ac.ed.inf.Serializer;
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.constant.OrderValidationCode;
 import uk.ac.ed.inf.ilp.data.CreditCardInformation;
@@ -35,11 +36,13 @@ public class SerializerTests {
 
     @Test
     void generateDeliveries(){
-        Serializer serializer = new Serializer("2023-10-12");
+        Serializer serializer = new Serializer("2023-11-06");
         try {
             serializer.serializeOrders(orders);
         } catch (Exception e){
             e.printStackTrace();
         }
     }
+
+
 }

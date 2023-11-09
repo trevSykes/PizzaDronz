@@ -1,6 +1,7 @@
-package uk.ac.ed.inf;
+package uk.ac.ed.inf.unit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.ac.ed.inf.LngLatHandler;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;

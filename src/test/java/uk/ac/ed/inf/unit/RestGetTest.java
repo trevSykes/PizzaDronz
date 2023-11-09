@@ -1,14 +1,12 @@
-package uk.ac.ed.inf;
+package uk.ac.ed.inf.unit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import uk.ac.ed.inf.ilp.data.LngLat;
-import uk.ac.ed.inf.ilp.data.Pizza;
-import uk.ac.ed.inf.ilp.data.Restaurant;
+import uk.ac.ed.inf.RestGetClient;
+import uk.ac.ed.inf.ilp.data.*;
 
+import java.io.IOException;
 import java.time.DayOfWeek;
-
-//TODO Write tests for other tings
 
 public class RestGetTest {
     private static Restaurant[] definedRestaurants;
@@ -80,7 +78,12 @@ public class RestGetTest {
     }
     @Test
     void getRestaurantsTest(){
-        Restaurant[] retrievedRestaurants = restClient.getRestaurants();
+        Restaurant[] retrievedRestaurants = null;
+        try {
+            retrievedRestaurants = restClient.getRestaurants();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
         boolean allEquals = true;
         for (int i=0; i<retrievedRestaurants.length;i++){
             allEquals = allEquals && restaurantEquals(retrievedRestaurants[i],definedRestaurants[i]);
@@ -89,7 +92,31 @@ public class RestGetTest {
     }
 
     @Test
+    void getOrdersTest(){
+        Order[] orders = null;
+        try{
+            orders = restClient.getOrders("2023-09-02");
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+    @Test
+    void getNamedRegionTest(){
+        NamedRegion[] noflyzones = null;
+        try{
+            noflyzones = restClient.getNoFlyZones();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Test
     void isRESTAlive(){
         Assertions.assertTrue(restClient.restIsAlive());
     }
+
+
 }
