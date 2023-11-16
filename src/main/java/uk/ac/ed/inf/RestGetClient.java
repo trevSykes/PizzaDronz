@@ -21,7 +21,7 @@ import java.util.Objects;
 public class RestGetClient {
     /* URL constants for each resource */
     static final String RESTAURANTS_LOC = "/restaurants";
-    static final String ORDERS_LOC = "/orders/";
+    static final String ORDERS_LOC = "/orders";
     static final String NO_FLY_LOC = "/noFlyZones";
     static final String CENTRAL_LOC = "/centralArea";
     static final String IS_ALIVE_LOC = "/isAlive";
@@ -70,7 +70,7 @@ public class RestGetClient {
      */
     public Order[] getOrders(String date) throws IOException{
         try{
-            return mapper.readValue(new URL(baseURL+ORDERS_LOC+date), Order[].class);
+            return mapper.readValue(new URL(baseURL+ORDERS_LOC+'/'+date), Order[].class);
         } catch (IOException e){
             throw new IOException("Error with parsing REST server's Orders resource\n\n"+e.getMessage());
         }

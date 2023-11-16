@@ -1,5 +1,8 @@
 package uk.ac.ed.inf;
 
+/**
+ * Object class that represents a move the drone makes. Used in the JSON serialization of the flightpath.
+ */
 public class DroneMove {
     public final String orderNo;
     public final double fromLongitude;

@@ -139,8 +139,8 @@ public class PathFinder {
         //Check for all 16 possible compass directions
         for(double angle = 0; angle<360 ; angle += 22.5){
             LngLat nextPos = lngLatHandler.nextPosition(q.pos,angle);
-            //Prune positions that are close to existing nodes
-            if(positionIsCloseToExistingNode(nextPos,openListPoints,closedListPoints)){
+            //Prune positions that are very close to existing nodes
+            if(positionIsVeryCloseToExistingNode(nextPos,openListPoints,closedListPoints)){
                 continue;
             }
             //Skip if in a no fly zone
@@ -162,19 +162,20 @@ public class PathFinder {
     }
 
     /**
-     *
+     * Used to prune the possible of successors of a node.
      * @param nextPos LngLat of a possible successor being generated
-     * @param openList Set of LngLat positions of nodes in the open list
-     * @param closedList Set of LngLat positions of nodes in the closed list
+     * @param openListNodes Set of LngLat positions of nodes in the open list
+     * @param closedListNodes Set of LngLat positions of nodes in the closed list
      * @return True if nextPos is <(0.75*DRONE_IS_CLOSE_DISTANCE) from existing nodes
      */
-    private boolean positionIsCloseToExistingNode(LngLat nextPos, Set<LngLat> openList, Set<LngLat> closedList){
-        for(LngLat closedListPos : closedList){
+    private boolean positionIsVeryCloseToExistingNode(LngLat nextPos, Set<LngLat> openListNodes,
+                                                      Set<LngLat> closedListNodes){
+        for(LngLat closedListPos : closedListNodes){
             if(lngLatHandler.isVeryCloseTo(nextPos,closedListPos)){
                 return true;
             }
         }
-        for(LngLat openListPos : openList){
+        for(LngLat openListPos : openListNodes){
             if(lngLatHandler.isVeryCloseTo(nextPos,openListPos)){
                 return true;
             }
@@ -183,7 +184,7 @@ public class PathFinder {
     }
 
     /**
-     *
+     * Used to ensure the Central Area requirement of the drone's flightpath is met.
      * @param goal LngLat of the end location of the path
      * @return True if the goal is Appleton Tower
      */
@@ -236,9 +237,17 @@ public class PathFinder {
                     this.pos.lat());
         }
 
+        /**
+         * Required implementation of the Comparable interface.
+         * Enables PriorityQueue to sort based on descending f scores.
+         * @param n the Node to be compared.
+         * @return Returns 0 if the f scores of this node and Node n are equal.
+         *         -1 if this Node's f score is smaller than Node n's
+         *         1 if this Node's f score is greater than Node n's
+         */
         @Override
-        public int compareTo(Node o) {
-            return Double.compare(this.f, o.f);
+        public int compareTo(Node n) {
+            return Double.compare(this.f, n.f);
         }
 
     }

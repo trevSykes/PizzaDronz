@@ -204,20 +204,21 @@ public class OrderValidator implements OrderValidation {
         if(!matcher.matches()){
             return true;
         }
-        //Luhn's algorithm
-        int n = creditCardNumber.length();
-        int sum = 0;
-        boolean isSecond = false;
-        for (int i= n-1; i>=0;i--){
-            int d = creditCardNumber.charAt(i) - '0';
-            if(isSecond == true){
-                d = d * 2;
-            }
-            sum += d/10;
-            sum += d%10;
-            isSecond = !isSecond;
-        }
-        return (sum % 10 ==0);
+        return false;
+//        //Luhn's algorithm
+//        int n = creditCardNumber.length();
+//        int sum = 0;
+//        boolean isSecond = false;
+//        for (int i= n-1; i>=0;i--){
+//            int d = creditCardNumber.charAt(i) - '0';
+//            if(isSecond == true){
+//                d = d * 2;
+//            }
+//            sum += d/10;
+//            sum += d%10;
+//            isSecond = !isSecond;
+//        }
+//        return (sum % 10 ==0);
 
     }
 

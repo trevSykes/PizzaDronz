@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="uk.ac.ed.inf.system.SystemTests" time="0.612" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="uk.ac.ed.inf.system.SystemTests" time="4.232" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="18"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="GB"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-18.0.2.1.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire/surefirebooter-20231109230542606_3.jar /Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire 2023-11-09T23-05-42_570-jvmRun1 surefire-20231109230542606_1tmp surefire_0-20231109230542606_2tmp"/>
+    <property name="sun.java.command" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire/surefirebooter-20231110131035164_3.jar /Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire 2023-11-10T13-10-35_122-jvmRun1 surefire-20231110131035164_1tmp surefire_0-20231110131035164_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/test-classes:/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/classes:/Users/johnsykes/.m2/repository/uk/ac/ed/inf/IlpDataObjects/1.0.0-SNAPSHOT/IlpDataObjects-1.0.0-SNAPSHOT.jar:/Users/johnsykes/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.1/jackson-annotations-2.15.1.jar:/Users/johnsykes/.m2/repository/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar:/Users/johnsykes/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar:/Users/johnsykes/.m2/repository/org/junit/jupiter/junit-jupiter/5.8.1/junit-jupiter-5.8.1.jar:/Users/johnsykes/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.1/junit-jupiter-api-5.8.1.jar:/Users/johnsykes/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/johnsykes/.m2/repository/org/junit/platform/junit-platform-commons/1.8.1/junit-platform-commons-1.8.1.jar:/Users/johnsykes/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/johnsykes/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.8.1/junit-jupiter-params-5.8.1.jar:/Users/johnsykes/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.1/junit-jupiter-engine-5.8.1.jar:/Users/johnsykes/.m2/repository/org/junit/platform/junit-platform-engine/1.8.1/junit-platform-engine-1.8.1.jar:/Users/johnsykes/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/johnsykes/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/johnsykes/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.6.0/jackson-datatype-jsr310-2.6.0.jar:/Users/johnsykes/.m2/repository/com/mapbox/mapboxsdk/mapbox-java-geojson/2.2.10/mapbox-java-geojson-2.2.10.jar:/Users/johnsykes/.m2/repository/com/mapbox/mapboxsdk/mapbox-java-core/2.2.10/mapbox-java-core-2.2.10.jar:"/>
@@ -30,7 +30,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire/surefirebooter-20231109230542606_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire/surefirebooter-20231110131035164_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="18.0.2.1+1-1"/>
@@ -57,168 +57,256 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="62.0"/>
   </properties>
-  <testcase name="test2023_09_02" classname="uk.ac.ed.inf.system.SystemTests" time="0.249">
-    <system-err><![CDATA[Error with parsing REST server's Orders resource
-
-Cannot construct instance of `uk.ac.ed.inf.ilp.data.CreditCardInformation` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
- at [Source: (URL); line: 1, column: 257] (through reference chain: java.lang.Object[][0]->uk.ac.ed.inf.ilp.data.Order["creditCardInformation"])
-java.io.IOException: Error with parsing REST server's Orders resource
-
-Cannot construct instance of `uk.ac.ed.inf.ilp.data.CreditCardInformation` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
- at [Source: (URL); line: 1, column: 257] (through reference chain: java.lang.Object[][0]->uk.ac.ed.inf.ilp.data.Order["creditCardInformation"])
-	at uk.ac.ed.inf.RestGetClient.getOrders(RestGetClient.java:62)
-	at uk.ac.ed.inf.Controller.getOrdersFromREST(Controller.java:35)
-	at uk.ac.ed.inf.system.SystemTests.test2023_09_02(SystemTests.java:42)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:577)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
-	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:149)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:140)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:84)
-	at org.junit.jupiter.engine.execution.ExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(ExecutableInvoker.java:115)
-	at org.junit.jupiter.engine.execution.ExecutableInvoker.lambda$invoke$0(ExecutableInvoker.java:105)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
-	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:104)
-	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:98)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:214)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:210)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:135)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:66)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
-	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
-	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:107)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:88)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:67)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:52)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)
-	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:50)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
-	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
-	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
-	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
-	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
-]]></system-err>
+  <testcase name="test2023_09_02" classname="uk.ac.ed.inf.system.SystemTests" time="1.556">
+    <system-out><![CDATA[Successfully validated 58 orders
+ORDER_NO - VALIDATION CODE - STATUS_CODE
+00C4BB73 - CARD_NUMBER_INVALID - INVALID
+691593AB - EXPIRY_DATE_INVALID - INVALID
+725D51B9 - CVV_INVALID - INVALID
+48CBD479 - TOTAL_INCORRECT - INVALID
+27E4ACB6 - PIZZA_NOT_DEFINED - INVALID
+2A85D93C - PIZZA_NOT_DEFINED - INVALID
+17DAC1BE - PIZZA_FROM_MULTIPLE_RESTAURANTS - INVALID
+1319159B - RESTAURANT_CLOSED - INVALID
+4A4E79E9 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+5A3D7C3D - NO_ERROR - VALID_BUT_NOT_DELIVERED
+5B1D3514 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+7F24AF12 - RESTAURANT_CLOSED - INVALID
+00BA717C - NO_ERROR - VALID_BUT_NOT_DELIVERED
+38BE7197 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+6EF47BDF - NO_ERROR - VALID_BUT_NOT_DELIVERED
+34DAEDA1 - RESTAURANT_CLOSED - INVALID
+300C9A59 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+165DBB6F - NO_ERROR - VALID_BUT_NOT_DELIVERED
+26F1B5AD - NO_ERROR - VALID_BUT_NOT_DELIVERED
+3B771C86 - RESTAURANT_CLOSED - INVALID
+53F545C1 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+1A485232 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+1FA32289 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+5D8A5545 - RESTAURANT_CLOSED - INVALID
+1296ED89 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+29FE28F7 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+1C2F09C5 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+1CA13073 - RESTAURANT_CLOSED - INVALID
+65DDF409 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+386B050A - NO_ERROR - VALID_BUT_NOT_DELIVERED
+07C8CF22 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+59F655AA - RESTAURANT_CLOSED - INVALID
+21462A2E - NO_ERROR - VALID_BUT_NOT_DELIVERED
+62F14CE7 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+6E7B9781 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+1E73FF1E - RESTAURANT_CLOSED - INVALID
+0F76B8A9 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+19790D04 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+269BF5C1 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+392FECB5 - RESTAURANT_CLOSED - INVALID
+79EED77D - NO_ERROR - VALID_BUT_NOT_DELIVERED
+7171355D - NO_ERROR - VALID_BUT_NOT_DELIVERED
+438A2D65 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+74441E58 - RESTAURANT_CLOSED - INVALID
+5CC20E0B - NO_ERROR - VALID_BUT_NOT_DELIVERED
+473706E0 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+1B911AE4 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+4592A061 - RESTAURANT_CLOSED - INVALID
+765E9084 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+21F15AF8 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+0E6F171C - NO_ERROR - VALID_BUT_NOT_DELIVERED
+466B1A5A - RESTAURANT_CLOSED - INVALID
+70BE8F96 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+2BC6BC67 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+24408ED9 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+622A80F6 - RESTAURANT_CLOSED - INVALID
+648285A1 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+288F014F - NO_ERROR - VALID_BUT_NOT_DELIVERED
+Total valid orders = 38
+ORDER_NO - VALIDATION CODE - STATUS_CODE
+00C4BB73 - CARD_NUMBER_INVALID - INVALID
+691593AB - EXPIRY_DATE_INVALID - INVALID
+725D51B9 - CVV_INVALID - INVALID
+48CBD479 - TOTAL_INCORRECT - INVALID
+27E4ACB6 - PIZZA_NOT_DEFINED - INVALID
+2A85D93C - PIZZA_NOT_DEFINED - INVALID
+17DAC1BE - PIZZA_FROM_MULTIPLE_RESTAURANTS - INVALID
+1319159B - RESTAURANT_CLOSED - INVALID
+4A4E79E9 - NO_ERROR - DELIVERED
+5A3D7C3D - NO_ERROR - DELIVERED
+5B1D3514 - NO_ERROR - DELIVERED
+7F24AF12 - RESTAURANT_CLOSED - INVALID
+00BA717C - NO_ERROR - DELIVERED
+38BE7197 - NO_ERROR - DELIVERED
+6EF47BDF - NO_ERROR - DELIVERED
+34DAEDA1 - RESTAURANT_CLOSED - INVALID
+300C9A59 - NO_ERROR - DELIVERED
+165DBB6F - NO_ERROR - DELIVERED
+26F1B5AD - NO_ERROR - DELIVERED
+3B771C86 - RESTAURANT_CLOSED - INVALID
+53F545C1 - NO_ERROR - DELIVERED
+1A485232 - NO_ERROR - DELIVERED
+1FA32289 - NO_ERROR - DELIVERED
+5D8A5545 - RESTAURANT_CLOSED - INVALID
+1296ED89 - NO_ERROR - DELIVERED
+29FE28F7 - NO_ERROR - DELIVERED
+1C2F09C5 - NO_ERROR - DELIVERED
+1CA13073 - RESTAURANT_CLOSED - INVALID
+65DDF409 - NO_ERROR - DELIVERED
+386B050A - NO_ERROR - DELIVERED
+07C8CF22 - NO_ERROR - DELIVERED
+59F655AA - RESTAURANT_CLOSED - INVALID
+21462A2E - NO_ERROR - DELIVERED
+62F14CE7 - NO_ERROR - DELIVERED
+6E7B9781 - NO_ERROR - DELIVERED
+1E73FF1E - RESTAURANT_CLOSED - INVALID
+0F76B8A9 - NO_ERROR - DELIVERED
+19790D04 - NO_ERROR - DELIVERED
+269BF5C1 - NO_ERROR - DELIVERED
+392FECB5 - RESTAURANT_CLOSED - INVALID
+79EED77D - NO_ERROR - DELIVERED
+7171355D - NO_ERROR - DELIVERED
+438A2D65 - NO_ERROR - DELIVERED
+74441E58 - RESTAURANT_CLOSED - INVALID
+5CC20E0B - NO_ERROR - DELIVERED
+473706E0 - NO_ERROR - DELIVERED
+1B911AE4 - NO_ERROR - DELIVERED
+4592A061 - RESTAURANT_CLOSED - INVALID
+765E9084 - NO_ERROR - DELIVERED
+21F15AF8 - NO_ERROR - DELIVERED
+0E6F171C - NO_ERROR - DELIVERED
+466B1A5A - RESTAURANT_CLOSED - INVALID
+70BE8F96 - NO_ERROR - DELIVERED
+2BC6BC67 - NO_ERROR - DELIVERED
+24408ED9 - NO_ERROR - DELIVERED
+622A80F6 - RESTAURANT_CLOSED - INVALID
+648285A1 - NO_ERROR - DELIVERED
+288F014F - NO_ERROR - DELIVERED
+Total delivered orders = 38
+Restaurants visited:Sodeberg Pavillion, Civerinos Slice, Domino's Pizza - Edinburgh - Southside
+Total time taken for processing : 1555
+]]></system-out>
   </testcase>
-  <testcase name="test2023_10_30" classname="uk.ac.ed.inf.system.SystemTests" time="0.363">
-    <system-err><![CDATA[Error with parsing REST server's Orders resource
-
-Cannot construct instance of `uk.ac.ed.inf.ilp.data.CreditCardInformation` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
- at [Source: (URL); line: 1, column: 257] (through reference chain: java.lang.Object[][0]->uk.ac.ed.inf.ilp.data.Order["creditCardInformation"])
-java.io.IOException: Error with parsing REST server's Orders resource
-
-Cannot construct instance of `uk.ac.ed.inf.ilp.data.CreditCardInformation` (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
- at [Source: (URL); line: 1, column: 257] (through reference chain: java.lang.Object[][0]->uk.ac.ed.inf.ilp.data.Order["creditCardInformation"])
-	at uk.ac.ed.inf.RestGetClient.getOrders(RestGetClient.java:62)
-	at uk.ac.ed.inf.Controller.getOrdersFromREST(Controller.java:35)
-	at uk.ac.ed.inf.system.SystemTests.test2023_10_30(SystemTests.java:104)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:577)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)
-	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:149)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:140)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:84)
-	at org.junit.jupiter.engine.execution.ExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(ExecutableInvoker.java:115)
-	at org.junit.jupiter.engine.execution.ExecutableInvoker.lambda$invoke$0(ExecutableInvoker.java:105)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
-	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:104)
-	at org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:98)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:214)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:210)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:135)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:66)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
-	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
-	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:107)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:88)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:54)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:67)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:52)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)
-	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)
-	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:50)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
-	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
-	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
-	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
-	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
-	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
-]]></system-err>
+  <testcase name="test2023_10_30" classname="uk.ac.ed.inf.system.SystemTests" time="2.675">
+    <system-out><![CDATA[Successfully validated 58 orders
+ORDER_NO - VALIDATION CODE - STATUS_CODE
+382954AB - CARD_NUMBER_INVALID - INVALID
+7768F6AB - EXPIRY_DATE_INVALID - INVALID
+53518063 - CVV_INVALID - INVALID
+45EE5C2A - TOTAL_INCORRECT - INVALID
+151EB0DD - PIZZA_NOT_DEFINED - INVALID
+377216E3 - PIZZA_NOT_DEFINED - INVALID
+217EA400 - PIZZA_FROM_MULTIPLE_RESTAURANTS - INVALID
+10763928 - RESTAURANT_CLOSED - INVALID
+33B0F72D - RESTAURANT_CLOSED - INVALID
+4A1968C1 - RESTAURANT_CLOSED - INVALID
+12ECCF1E - NO_ERROR - VALID_BUT_NOT_DELIVERED
+12ACC120 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+4A04BCE7 - RESTAURANT_CLOSED - INVALID
+75E97E04 - RESTAURANT_CLOSED - INVALID
+16DB2431 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+2A126E0F - NO_ERROR - VALID_BUT_NOT_DELIVERED
+711C51D8 - RESTAURANT_CLOSED - INVALID
+5FB4E0DA - RESTAURANT_CLOSED - INVALID
+7658BE32 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+49137D84 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+612EB761 - RESTAURANT_CLOSED - INVALID
+183AA1F5 - RESTAURANT_CLOSED - INVALID
+7862A617 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+4013FC26 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+630C9FDE - RESTAURANT_CLOSED - INVALID
+10E455F2 - RESTAURANT_CLOSED - INVALID
+55CCCE0D - NO_ERROR - VALID_BUT_NOT_DELIVERED
+1696620B - NO_ERROR - VALID_BUT_NOT_DELIVERED
+7BA075DE - RESTAURANT_CLOSED - INVALID
+16C322C7 - RESTAURANT_CLOSED - INVALID
+7E2C9289 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+24021CBD - NO_ERROR - VALID_BUT_NOT_DELIVERED
+0EB64939 - RESTAURANT_CLOSED - INVALID
+182E87CC - RESTAURANT_CLOSED - INVALID
+49A5215D - NO_ERROR - VALID_BUT_NOT_DELIVERED
+72BAB98B - NO_ERROR - VALID_BUT_NOT_DELIVERED
+6B647EB5 - RESTAURANT_CLOSED - INVALID
+2E9E7208 - RESTAURANT_CLOSED - INVALID
+328D6DD1 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+1DC02A84 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+5FEDD145 - RESTAURANT_CLOSED - INVALID
+2AE5D8CB - RESTAURANT_CLOSED - INVALID
+26886206 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+2209148D - NO_ERROR - VALID_BUT_NOT_DELIVERED
+6A99D012 - RESTAURANT_CLOSED - INVALID
+3951B00D - RESTAURANT_CLOSED - INVALID
+5F8DDEDC - NO_ERROR - VALID_BUT_NOT_DELIVERED
+5AF705D5 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+5B081CAA - RESTAURANT_CLOSED - INVALID
+2CD10586 - RESTAURANT_CLOSED - INVALID
+3B77711D - NO_ERROR - VALID_BUT_NOT_DELIVERED
+00063722 - NO_ERROR - VALID_BUT_NOT_DELIVERED
+7EDD94C5 - RESTAURANT_CLOSED - INVALID
+4E273A1D - RESTAURANT_CLOSED - INVALID
+1E3B677E - NO_ERROR - VALID_BUT_NOT_DELIVERED
+5108900B - NO_ERROR - VALID_BUT_NOT_DELIVERED
+33DF0EF5 - RESTAURANT_CLOSED - INVALID
+6C81C75D - RESTAURANT_CLOSED - INVALID
+Total valid orders = 24
+ORDER_NO - VALIDATION CODE - STATUS_CODE
+382954AB - CARD_NUMBER_INVALID - INVALID
+7768F6AB - EXPIRY_DATE_INVALID - INVALID
+53518063 - CVV_INVALID - INVALID
+45EE5C2A - TOTAL_INCORRECT - INVALID
+151EB0DD - PIZZA_NOT_DEFINED - INVALID
+377216E3 - PIZZA_NOT_DEFINED - INVALID
+217EA400 - PIZZA_FROM_MULTIPLE_RESTAURANTS - INVALID
+10763928 - RESTAURANT_CLOSED - INVALID
+33B0F72D - RESTAURANT_CLOSED - INVALID
+4A1968C1 - RESTAURANT_CLOSED - INVALID
+12ECCF1E - NO_ERROR - DELIVERED
+12ACC120 - NO_ERROR - DELIVERED
+4A04BCE7 - RESTAURANT_CLOSED - INVALID
+75E97E04 - RESTAURANT_CLOSED - INVALID
+16DB2431 - NO_ERROR - DELIVERED
+2A126E0F - NO_ERROR - DELIVERED
+711C51D8 - RESTAURANT_CLOSED - INVALID
+5FB4E0DA - RESTAURANT_CLOSED - INVALID
+7658BE32 - NO_ERROR - DELIVERED
+49137D84 - NO_ERROR - DELIVERED
+612EB761 - RESTAURANT_CLOSED - INVALID
+183AA1F5 - RESTAURANT_CLOSED - INVALID
+7862A617 - NO_ERROR - DELIVERED
+4013FC26 - NO_ERROR - DELIVERED
+630C9FDE - RESTAURANT_CLOSED - INVALID
+10E455F2 - RESTAURANT_CLOSED - INVALID
+55CCCE0D - NO_ERROR - DELIVERED
+1696620B - NO_ERROR - DELIVERED
+7BA075DE - RESTAURANT_CLOSED - INVALID
+16C322C7 - RESTAURANT_CLOSED - INVALID
+7E2C9289 - NO_ERROR - DELIVERED
+24021CBD - NO_ERROR - DELIVERED
+0EB64939 - RESTAURANT_CLOSED - INVALID
+182E87CC - RESTAURANT_CLOSED - INVALID
+49A5215D - NO_ERROR - DELIVERED
+72BAB98B - NO_ERROR - DELIVERED
+6B647EB5 - RESTAURANT_CLOSED - INVALID
+2E9E7208 - RESTAURANT_CLOSED - INVALID
+328D6DD1 - NO_ERROR - DELIVERED
+1DC02A84 - NO_ERROR - DELIVERED
+5FEDD145 - RESTAURANT_CLOSED - INVALID
+2AE5D8CB - RESTAURANT_CLOSED - INVALID
+26886206 - NO_ERROR - DELIVERED
+2209148D - NO_ERROR - DELIVERED
+6A99D012 - RESTAURANT_CLOSED - INVALID
+3951B00D - RESTAURANT_CLOSED - INVALID
+5F8DDEDC - NO_ERROR - DELIVERED
+5AF705D5 - NO_ERROR - DELIVERED
+5B081CAA - RESTAURANT_CLOSED - INVALID
+2CD10586 - RESTAURANT_CLOSED - INVALID
+3B77711D - NO_ERROR - DELIVERED
+00063722 - NO_ERROR - DELIVERED
+7EDD94C5 - RESTAURANT_CLOSED - INVALID
+4E273A1D - RESTAURANT_CLOSED - INVALID
+1E3B677E - NO_ERROR - DELIVERED
+5108900B - NO_ERROR - DELIVERED
+33DF0EF5 - RESTAURANT_CLOSED - INVALID
+6C81C75D - RESTAURANT_CLOSED - INVALID
+Total delivered orders = 24
+Restaurants visited:Sora Lella Vegan Restaurant, Civerinos Slice
+Total time taken for processing : 2675
+]]></system-out>
   </testcase>
 </testsuite>

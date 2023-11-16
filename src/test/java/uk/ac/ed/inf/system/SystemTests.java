@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import uk.ac.ed.inf.Controller;
 import uk.ac.ed.inf.DroneMove;
 import uk.ac.ed.inf.OrderValidator;
+import uk.ac.ed.inf.RestGetClient;
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.constant.OrderValidationCode;
 import uk.ac.ed.inf.ilp.data.*;
@@ -58,7 +59,7 @@ public class SystemTests {
         }
         System.out.println("Total valid orders = "+validCount);
 
-        List<DroneMove> droneMoves = controller.findPathsForValidOrders(restaurants,noFlyZones,centralArea);
+        List<DroneMove> droneMoves = controller.findPathsForValidOrders(validatedOrders,restaurants,noFlyZones,centralArea);
 
         int deliveredCount = 0;
         System.out.println("ORDER_NO - VALIDATION CODE - STATUS_CODE");
@@ -120,7 +121,7 @@ public class SystemTests {
         }
         System.out.println("Total valid orders = "+validCount);
 
-        List<DroneMove> droneMoves = controller.findPathsForValidOrders(restaurants,noFlyZones,centralArea);
+        List<DroneMove> droneMoves = controller.findPathsForValidOrders(validatedOrders,restaurants,noFlyZones,centralArea);
 
         int deliveredCount = 0;
         System.out.println("ORDER_NO - VALIDATION CODE - STATUS_CODE");
@@ -143,10 +144,11 @@ public class SystemTests {
         }
         long endTime = System.currentTimeMillis();
         String restaurantsVisited = visitedRestaurants.stream()
-                .map(Restaurant::name) // Extract the name from each Restaurant object
-                .collect(Collectors.joining(", ")); // Join the names with a comma and space
+                .map(Restaurant::name)
+                .collect(Collectors.joining(", "));
         System.out.println("Restaurants visited:"+restaurantsVisited);
         System.out.println("Total time taken for processing : "+(endTime-startTime));
     }
+
 
 }

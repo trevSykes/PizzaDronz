@@ -1,41 +1,41 @@
 [ {
   "orderNo" : "00C4BB73",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "CARD_NUMBER_INVALID",
   "costInPence" : 2500
 }, {
   "orderNo" : "691593AB",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "EXPIRY_DATE_INVALID",
   "costInPence" : 2600
 }, {
   "orderNo" : "725D51B9",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "CVV_INVALID",
   "costInPence" : 2400
 }, {
   "orderNo" : "48CBD479",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "TOTAL_INCORRECT",
   "costInPence" : 2436
 }, {
   "orderNo" : "27E4ACB6",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "PIZZA_NOT_DEFINED",
   "costInPence" : 2500
 }, {
   "orderNo" : "2A85D93C",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "PIZZA_NOT_DEFINED",
   "costInPence" : -1994808920
 }, {
   "orderNo" : "17DAC1BE",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "PIZZA_FROM_MULTIPLE_RESTAURANTS",
   "costInPence" : 3400
 }, {
   "orderNo" : "1319159B",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 1500
 }, {
@@ -55,7 +55,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "7F24AF12",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -75,7 +75,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "34DAEDA1",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -95,7 +95,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "3B771C86",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -115,7 +115,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "5D8A5545",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -135,7 +135,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "1CA13073",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -155,7 +155,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "59F655AA",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -175,7 +175,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "1E73FF1E",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -195,7 +195,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "392FECB5",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -215,7 +215,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "74441E58",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -235,7 +235,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "4592A061",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -255,7 +255,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "466B1A5A",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {
@@ -275,7 +275,7 @@
   "costInPence" : 2500
 }, {
   "orderNo" : "622A80F6",
-  "orderStatus" : "UNDEFINED",
+  "orderStatus" : "INVALID",
   "orderValidationCode" : "RESTAURANT_CLOSED",
   "costInPence" : 2600
 }, {

@@ -35,25 +35,24 @@ public class App
         } catch (DateTimeParseException e){
             System.err.println("ERROR: First argument given is not a valid date of the format yyyy-MM-dd." +
                     "\nPlease run terminal command with a valid date");
-            return;
+            System.exit(1);
         }
 
         //Validate url argument
-        String url_regex = "((http|https)://)(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]"
-                + "{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)";
+        String url_regex = "^(https?://)[a-zA-Z0-9-]+(\\.[a-zA-Z]{2,})+(/.*)?$";
         Pattern p = Pattern.compile(url_regex);
         Matcher matcher = p.matcher(url);
         if(!matcher.matches()){
             System.err.println("ERROR: Second argument given is not a valid url." +
                     "\nPlease run terminal command with a valid url");
-            return;
+            System.exit(1);
         }
 
         Controller controller = new Controller(url,dateString);
-        Restaurant[] restaurants;
-        NamedRegion[] noFlyZones;
-        NamedRegion centralArea ;
-        Order[] unvalidatedOrders;
+        Restaurant[] restaurants = null;
+        NamedRegion[] noFlyZones = null;
+        NamedRegion centralArea = null;
+        Order[] unvalidatedOrders = null;
 
         try {
             restaurants = controller.getDefinedRestaurantsFromREST();
@@ -66,16 +65,21 @@ public class App
             System.out.printf("Read orders for %s from REST service...%n",dateString);
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            return;
+            System.exit(1);
+        }
+
+        if(restaurants == null || noFlyZones == null || centralArea == null || unvalidatedOrders == null){
+            System.err.println("One of the retrieved resources from the REST service is null");
+            System.exit(1);
         }
 
         Order[] validatedOrders = controller.validateOrders(unvalidatedOrders,restaurants);
-        List<DroneMove> flightpath;
+        List<DroneMove> flightpath = null;
         try{
-            flightpath = controller.findPathsForValidOrders(restaurants,noFlyZones,centralArea);
+            flightpath = controller.findPathsForValidOrders(validatedOrders,restaurants,noFlyZones,centralArea);
         } catch (RuntimeException e){
             System.err.println(e.getMessage());
-            return;
+            System.exit(1);
          }
 
         try{
@@ -87,10 +91,10 @@ public class App
             System.out.println("Geo-serialized flightpath...");
         } catch (IOException e) {
             System.err.println(e.getMessage());
-            return;
+            System.exit(1);
         }
 
         System.out.println("Success!\nOrders validated and flightpath calculated for PizzaDronz.");
-
+        System.exit(0);
     }
 }

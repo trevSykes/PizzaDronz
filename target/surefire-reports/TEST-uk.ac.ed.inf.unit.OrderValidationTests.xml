@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="uk.ac.ed.inf.unit.OrderValidationTests" time="0.034" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="uk.ac.ed.inf.unit.OrderValidationTests" time="0.033" tests="15" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="18"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="GB"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-18.0.2.1.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire/surefirebooter-20231109230542606_3.jar /Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire 2023-11-09T23-05-42_570-jvmRun1 surefire-20231109230542606_1tmp surefire_0-20231109230542606_2tmp"/>
+    <property name="sun.java.command" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire/surefirebooter-20231110131035164_3.jar /Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire 2023-11-10T13-10-35_122-jvmRun1 surefire-20231110131035164_1tmp surefire_0-20231110131035164_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/test-classes:/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/classes:/Users/johnsykes/.m2/repository/uk/ac/ed/inf/IlpDataObjects/1.0.0-SNAPSHOT/IlpDataObjects-1.0.0-SNAPSHOT.jar:/Users/johnsykes/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.1/jackson-annotations-2.15.1.jar:/Users/johnsykes/.m2/repository/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar:/Users/johnsykes/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar:/Users/johnsykes/.m2/repository/org/junit/jupiter/junit-jupiter/5.8.1/junit-jupiter-5.8.1.jar:/Users/johnsykes/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.1/junit-jupiter-api-5.8.1.jar:/Users/johnsykes/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/johnsykes/.m2/repository/org/junit/platform/junit-platform-commons/1.8.1/junit-platform-commons-1.8.1.jar:/Users/johnsykes/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/johnsykes/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.8.1/junit-jupiter-params-5.8.1.jar:/Users/johnsykes/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.1/junit-jupiter-engine-5.8.1.jar:/Users/johnsykes/.m2/repository/org/junit/platform/junit-platform-engine/1.8.1/junit-platform-engine-1.8.1.jar:/Users/johnsykes/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/johnsykes/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/johnsykes/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.6.0/jackson-datatype-jsr310-2.6.0.jar:/Users/johnsykes/.m2/repository/com/mapbox/mapboxsdk/mapbox-java-geojson/2.2.10/mapbox-java-geojson-2.2.10.jar:/Users/johnsykes/.m2/repository/com/mapbox/mapboxsdk/mapbox-java-core/2.2.10/mapbox-java-core-2.2.10.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire/surefirebooter-20231109230542606_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/johnsykes/Desktop/Uni/Year3/ILP/PizzaDronz/target/surefire/surefirebooter-20231110131035164_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="18.0.2.1+1-1"/>
@@ -59,16 +59,16 @@
   <testcase name="closedRestaurantOrder" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.016"/>
   <testcase name="multipleRestaurants" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
   <testcase name="invalidExpiryDateString" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
-  <testcase name="incorrectTotal" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
+  <testcase name="incorrectTotal" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
   <testcase name="testClone" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
-  <testcase name="undefinedPizza" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
-  <testcase name="alreadyValidatedValidOrder" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
+  <testcase name="undefinedPizza" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
+  <testcase name="alreadyValidatedValidOrder" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
   <testcase name="overMaxPizzaCount" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
-  <testcase name="invalidCVVLong" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
+  <testcase name="invalidCVVLong" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
   <testcase name="invalidCardNumberLong" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
   <testcase name="simpleValidOrder" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
   <testcase name="invalidExpiryDate" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
   <testcase name="invalidCVVShort" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
-  <testcase name="invalidCardNumberShort" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0.001"/>
+  <testcase name="invalidCardNumberShort" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
   <testcase name="validExpiryDateEdgeCase" classname="uk.ac.ed.inf.unit.OrderValidationTests" time="0"/>
 </testsuite>
