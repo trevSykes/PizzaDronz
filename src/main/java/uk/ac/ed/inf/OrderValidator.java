@@ -24,18 +24,18 @@ public class OrderValidator implements OrderValidation {
      * @return Order object with updated validation and status codes
      */
     @Override
-    public Order validateOrder(Order orderToValidate, Restaurant[] definedRestaurants) throws RuntimeException {
+    public Order validateOrder(Order orderToValidate, Restaurant[] definedRestaurants) {
         Pizza[] pizzasInOrder = orderToValidate.getPizzasInOrder();
         CreditCardInformation creditCardInformation = orderToValidate.getCreditCardInformation();
         LocalDate orderDate = orderToValidate.getOrderDate();
         int priceTotalInPence = orderToValidate.getPriceTotalInPence();
 
-//        //Check for null data input
-//        try {
-//            checkForNullData(pizzasInOrder, creditCardInformation, orderDate, definedRestaurants);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e.getMessage());
-//        }
+        //Check for null data input
+        try {
+            checkForNullData(pizzasInOrder, creditCardInformation, orderDate, definedRestaurants);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         //Return order if already validated
         if (orderToValidate.getOrderValidationCode() != OrderValidationCode.UNDEFINED){
@@ -49,8 +49,7 @@ public class OrderValidator implements OrderValidation {
 
         if (orderedPizzasDontExist(pizzasInOrder, allDefinedPizzas)){
             validationCode = OrderValidationCode.PIZZA_NOT_DEFINED;
-        }
-        else if (totalIsIncorrect(priceTotalInPence, pizzasInOrder, allDefinedPizzas)) {
+        } else if (totalIsIncorrect(priceTotalInPence, pizzasInOrder, allDefinedPizzas)) {
             validationCode = OrderValidationCode.TOTAL_INCORRECT;
         }
         else if (invalidNumberOfPizzas(pizzasInOrder)){
@@ -77,13 +76,54 @@ public class OrderValidator implements OrderValidation {
                 statusCode = OrderStatus.VALID_BUT_NOT_DELIVERED;
             }
         }
-        return new Order(orderToValidate.getOrderNo(),
+        return cloneOrderAndAssignCodes(orderToValidate, statusCode, validationCode);
+    }
+
+    /**
+     * Used to return a cloned order after validation
+     * @param orderToValidate Order object to be cloned
+     * @param statusCode OrderStatus enum to be assigned to cloned Order
+     * @param validationCode OrderValidationCode enum to be assigned to cloned Order
+     * @return Clone of orderToValidate with statusCode and validationCode
+     * set to their relevant field
+     */
+    public Order cloneOrderAndAssignCodes(Order orderToValidate, OrderStatus statusCode,
+                                          OrderValidationCode validationCode) {
+        Order validatedOrder = new Order(
+                orderToValidate.getOrderNo(),
                 orderToValidate.getOrderDate(),
-                statusCode,
-                validationCode,
                 orderToValidate.getPriceTotalInPence(),
                 orderToValidate.getPizzasInOrder(),
-                orderToValidate.getCreditCardInformation());
+                orderToValidate.getCreditCardInformation()
+        );
+        validatedOrder.setOrderStatus(statusCode);
+        validatedOrder.setOrderValidationCode(validationCode);
+        return validatedOrder;
+    }
+
+    /**
+     * Helper method to validate whether order data exists
+     * @param pizzasInOrder Array of Pizza objects from orderToValidate
+     * @param creditCardInformation CreditCardInformation object from orderToValidate
+     * @param orderDate LocalDate of the orderDate from orderToValidate
+     * @param definedRestaurants Array of Restaurant objects from orderToValidate
+     * @throws Exception which corresponds to which field is identified null
+     */
+    private void checkForNullData(Pizza[] pizzasInOrder,
+                                  CreditCardInformation creditCardInformation, LocalDate orderDate,
+                                  Restaurant[] definedRestaurants) throws Exception {
+        if (pizzasInOrder == null) {
+            throw new Exception("Pizzas in order is null. Cannot validate order. Check inputs.");
+        }
+        if (creditCardInformation == null) {
+            throw new Exception("Credit card information is null. Cannot validate order. Check inputs.");
+        }
+        if (orderDate == null) {
+            throw new Exception("Order date is null. Cannot validate order. Check inputs.");
+        }
+        if (definedRestaurants == null) {
+            throw new Exception("Defined restaurants are null. Cannot validate order. Check inputs.");
+        }
     }
 
     /**
@@ -92,7 +132,7 @@ public class OrderValidator implements OrderValidation {
      * @param restaurants Array of restaurants that are defined in the system
      * @return A Restaurant object that makes all pizzas in the order or null if it does not exist
      */
-    public Restaurant findValidRestaurant(Pizza[] pizzas, Restaurant[] restaurants){
+    private Restaurant findValidRestaurant(Pizza[] pizzas, Restaurant[] restaurants){
         Set<Pizza> pizzaSet = new HashSet<>(Arrays.asList(pizzas));
         for (Restaurant restaurant : restaurants){
             Set<Pizza> menu = new HashSet<>(Arrays.asList(restaurant.menu()));
@@ -136,7 +176,7 @@ public class OrderValidator implements OrderValidation {
      * @param pizzasInOrder Array of Pizza objects in the order
      * @param allPizzas Map of all pizza names and their prices
      * @return True if the total found in the order is not equal to the true total
-     *         of pizza prices and the delivery charge
+     *         of pizza prices and the devliery charge
      */
     private boolean totalIsIncorrect(int priceTotalInPence, Pizza[] pizzasInOrder,
                                      Map<String, Integer> allPizzas){
@@ -174,8 +214,8 @@ public class OrderValidator implements OrderValidation {
      * @return True if creditCardExpiry represents a date after the orderDate
      */
     private boolean invalidCCExpiry(String creditCardExpiry, LocalDate orderDate){
-        //First check for format of MM/YY and month section cannot be >12
-        String expiryPattern = "^(0[1-9]|1[0-2])/\\d{2}$";
+        //First check for format of MM/YY
+        String expiryPattern = "[\\d{2}]/[\\d{2}]";
         Pattern reg = Pattern.compile(expiryPattern);
         Matcher matcher = reg.matcher(creditCardExpiry);
         if (!matcher.matches()){
@@ -184,10 +224,13 @@ public class OrderValidator implements OrderValidation {
         String[] expiryParts = creditCardExpiry.split("/");
         int month = Integer.parseInt(expiryParts[0]);
         int year = Integer.parseInt((expiryParts[1]));
-
+        //Check if month value is valid
+        if (month > 12){
+            return false;
+        }
         //Credit cards are valid until the first day of the next month
         LocalDate expiryDate = LocalDate.of(2000+year,month,1).plusMonths(1);
-        return (expiryDate.isBefore(orderDate));
+       return ((expiryDate.isBefore(orderDate)) || (expiryDate.isBefore(LocalDate.now())));
 
     }
 
@@ -197,29 +240,10 @@ public class OrderValidator implements OrderValidation {
      * @return True if creditCardNumber is not valid (not a string of 16 digits)
      */
     private boolean invalidCCNumber(String creditCardNumber){
-        //Checks if the card number is 16 digits
         String ccNumPattern = "\\d{16}";
         Pattern reg = Pattern.compile(ccNumPattern);
         Matcher matcher = reg.matcher(creditCardNumber);
-        if(!matcher.matches()){
-            return true;
-        }
-        return false;
-//        //Luhn's algorithm
-//        int n = creditCardNumber.length();
-//        int sum = 0;
-//        boolean isSecond = false;
-//        for (int i= n-1; i>=0;i--){
-//            int d = creditCardNumber.charAt(i) - '0';
-//            if(isSecond == true){
-//                d = d * 2;
-//            }
-//            sum += d/10;
-//            sum += d%10;
-//            isSecond = !isSecond;
-//        }
-//        return (sum % 10 ==0);
-
+        return !matcher.matches();
     }
 
     //Checks if CVV number is not a string of 16 digits

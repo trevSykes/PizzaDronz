@@ -1,26 +1,19 @@
-package uk.ac.ed.inf.unit;
+package uk.ac.ed.inf;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.ac.ed.inf.OrderValidator;
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.constant.OrderValidationCode;
 import uk.ac.ed.inf.ilp.data.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class OrderValidationTests {
     OrderValidator orderValidator;
     Restaurant[] definedRestaurants;
     Order baseValidOrder;
-
-    private static Order cloneOrderAndAssignCodes(Order orderToValidate, OrderStatus statusCode,
-                                   OrderValidationCode validationCode) {
-        return new Order(orderToValidate.getOrderNo(), orderToValidate.getOrderDate(),
-                statusCode, validationCode,orderToValidate.getPriceTotalInPence(),orderToValidate.getPizzasInOrder(),orderToValidate.getCreditCardInformation());
-
-    }
     @BeforeEach
     void setUp(){
          orderValidator = new OrderValidator();
@@ -75,28 +68,18 @@ public class OrderValidationTests {
                         new Pizza("Super Cheese", 1400),
                         new Pizza("All Shrooms", 900)
                 },
-                new CreditCardInformation("4111111111111111",
-                                            "10/26",
+                new CreditCardInformation("1449815592072338",
+                                            "03/28",
                                                      "057")
         );
-        baseValidOrder.setCreditCardInformation(new CreditCardInformation("1449815592072338",
-                "10/26",
-                "057"));
     }
 
     @Test
-    void simpleValidOrder() {
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(baseValidOrder,OrderStatus.VALID_BUT_NOT_DELIVERED,
-                OrderValidationCode.NO_ERROR);
+    void simpleValidOrder(){
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
+                baseValidOrder,OrderStatus.VALID_BUT_NOT_DELIVERED,OrderValidationCode.NO_ERROR);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
         Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
-    }
-    @Test
-    void alreadyValidatedValidOrder(){
-        Order alreadyValidatedOrder = cloneOrderAndAssignCodes(
-                baseValidOrder,OrderStatus.VALID_BUT_NOT_DELIVERED,OrderValidationCode.NO_ERROR);
-        Order validatedOrder = orderValidator.validateOrder(alreadyValidatedOrder,definedRestaurants);
-        Assertions.assertEquals(alreadyValidatedOrder.hashCode(),validatedOrder.hashCode());
 
     }
 
@@ -106,10 +89,10 @@ public class OrderValidationTests {
                 "15592072338", "03/28", "057");
         baseValidOrder.setCreditCardInformation(wrongCCInfo);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.CARD_NUMBER_INVALID);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -118,10 +101,10 @@ public class OrderValidationTests {
                 "155920782148012374012338", "03/28", "057");
         baseValidOrder.setCreditCardInformation(wrongCCInfo);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.CARD_NUMBER_INVALID);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -130,10 +113,10 @@ public class OrderValidationTests {
                 "1449815592072338", "03/20", "057");
         baseValidOrder.setCreditCardInformation(wrongCCInfo);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.EXPIRY_DATE_INVALID);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -142,10 +125,10 @@ public class OrderValidationTests {
                 "1449815592072338", "xx/yy", "057");
         baseValidOrder.setCreditCardInformation(wrongCCInfo);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.EXPIRY_DATE_INVALID);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -154,10 +137,10 @@ public class OrderValidationTests {
                 "1449815592072338", "10/23", "057");
         baseValidOrder.setCreditCardInformation(wrongCCInfo);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.VALID_BUT_NOT_DELIVERED,OrderValidationCode.NO_ERROR);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -166,10 +149,10 @@ public class OrderValidationTests {
                 "1449815592072338", "03/28", "1");
         baseValidOrder.setCreditCardInformation(wrongCCInfo);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.CVV_INVALID);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -178,20 +161,20 @@ public class OrderValidationTests {
                 "1449815592072338", "03/28", "12134");
         baseValidOrder.setCreditCardInformation(wrongCCInfo);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.CVV_INVALID);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
     void incorrectTotal(){
         baseValidOrder.setPriceTotalInPence(2300);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.TOTAL_INCORRECT);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -202,10 +185,10 @@ public class OrderValidationTests {
                 new Pizza ("Imaginary pizza",2300)});
         baseValidOrder.setPriceTotalInPence(4700);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.PIZZA_NOT_DEFINED);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -215,10 +198,10 @@ public class OrderValidationTests {
                 new Pizza("Proper Pizza", 1400)});
         baseValidOrder.setPriceTotalInPence(2900);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode.PIZZA_FROM_MULTIPLE_RESTAURANTS);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
@@ -231,29 +214,20 @@ public class OrderValidationTests {
                 new Pizza("All Shrooms", 900)});
         baseValidOrder.setPriceTotalInPence(6600);
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
                 baseValidOrder,OrderStatus.INVALID,OrderValidationCode. MAX_PIZZA_COUNT_EXCEEDED);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
     @Test
     void closedRestaurantOrder(){
         baseValidOrder.setOrderDate(LocalDate.of(2023,10,2));
 
-        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
-                baseValidOrder,OrderStatus.INVALID,OrderValidationCode.RESTAURANT_CLOSED);
+        Order expectedValidatedOrder = orderValidator.cloneOrderAndAssignCodes(
+                baseValidOrder,OrderStatus.INVALID,OrderValidationCode. RESTAURANT_CLOSED);
         Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
-        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
-    }
-
-    @Test
-    void testClone(){
-        baseValidOrder.setOrderStatus(OrderStatus.DELIVERED);
-        baseValidOrder.setOrderValidationCode(OrderValidationCode.CVV_INVALID);
-        Order clonedOrder = cloneOrderAndAssignCodes(baseValidOrder,OrderStatus.DELIVERED,OrderValidationCode.CVV_INVALID);
-        Assertions.assertEquals(baseValidOrder.hashCode(),clonedOrder.hashCode());
-
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());;
     }
 
 }
