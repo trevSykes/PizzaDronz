@@ -49,7 +49,8 @@ public class OrderValidator implements OrderValidation {
 
         if (orderedPizzasDontExist(pizzasInOrder, allDefinedPizzas)){
             validationCode = OrderValidationCode.PIZZA_NOT_DEFINED;
-        } else if (totalIsIncorrect(priceTotalInPence, pizzasInOrder, allDefinedPizzas)) {
+        }
+        else if (totalIsIncorrect(priceTotalInPence, pizzasInOrder, allDefinedPizzas)) {
             validationCode = OrderValidationCode.TOTAL_INCORRECT;
         }
         else if (invalidNumberOfPizzas(pizzasInOrder)){
@@ -214,8 +215,8 @@ public class OrderValidator implements OrderValidation {
      * @return True if creditCardExpiry represents a date after the orderDate
      */
     private boolean invalidCCExpiry(String creditCardExpiry, LocalDate orderDate){
-        //First check for format of MM/YY
-        String expiryPattern = "[\\d{2}]/[\\d{2}]";
+        //First check for format of MM/YY and month section cannot be >12
+        String expiryPattern = "^(0[1-9]|1[0-2])/\\d{2}$";
         Pattern reg = Pattern.compile(expiryPattern);
         Matcher matcher = reg.matcher(creditCardExpiry);
         if (!matcher.matches()){
@@ -224,13 +225,10 @@ public class OrderValidator implements OrderValidation {
         String[] expiryParts = creditCardExpiry.split("/");
         int month = Integer.parseInt(expiryParts[0]);
         int year = Integer.parseInt((expiryParts[1]));
-        //Check if month value is valid
-        if (month > 12){
-            return false;
-        }
+
         //Credit cards are valid until the first day of the next month
         LocalDate expiryDate = LocalDate.of(2000+year,month,1).plusMonths(1);
-       return ((expiryDate.isBefore(orderDate)) || (expiryDate.isBefore(LocalDate.now())));
+        return ((expiryDate.isBefore(orderDate)) || (expiryDate.isBefore(LocalDate.now())));
 
     }
 

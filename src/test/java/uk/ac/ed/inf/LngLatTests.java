@@ -1,4 +1,4 @@
-package uk.ac.ed.inf.unit;
+package uk.ac.ed.inf;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.ac.ed.inf.LngLatHandler;
