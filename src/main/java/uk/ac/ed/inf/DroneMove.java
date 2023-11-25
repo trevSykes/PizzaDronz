@@ -21,26 +21,15 @@ public class DroneMove {
         this.toLatitude = toLat;
     }
 
-    public String getOrderNo() {
-        return orderNo;
-    }
-
     public double getFromLongitude(){
         return fromLongitude;
     }
-
     public double getFromLatitude() {
         return fromLatitude;
     }
-
-    public double getAngle() {
-        return angle;
-    }
-
     public double getToLongitude() {
         return toLongitude;
     }
-
     public double getToLatitude() {
         return toLatitude;
     }

@@ -100,7 +100,7 @@ public class PathFinder {
      * Reconstructs path using the current path's end node
      * @return List of DroneMove objects
      */
-    public List<DroneMove> getCurrentPathMoves(){
+    private List<DroneMove> getCurrentPathMoves(){
         List<DroneMove> moves = new ArrayList<>();
         Node current = currentPathEnd;
         while(current.previous.previous != null){
@@ -133,7 +133,7 @@ public class PathFinder {
      * @param closedListPoints Set of LngLat positions of nodes in the closed set
      * @return List of Nodes that are the legal successors to q
      */
-    private List<Node> generateSuccessors(Node q, LngLat goal,NamedRegion centralArea,NamedRegion[] noFlyZones,
+    private List<Node> generateSuccessors(Node q, LngLat goal, NamedRegion centralArea, NamedRegion[] noFlyZones,
                                       Set<LngLat> openListPoints, Set<LngLat> closedListPoints) {
         List<Node> successors = new ArrayList<>();
         //Check for all 16 possible compass directions
@@ -208,7 +208,7 @@ public class PathFinder {
     }
 
     //Node class used in A* search
-    private static class Node implements Comparable<Node>{
+    private class Node implements Comparable<Node>{
         private final Node previous;
         private final double angleFromPrev;
         private final LngLat pos;

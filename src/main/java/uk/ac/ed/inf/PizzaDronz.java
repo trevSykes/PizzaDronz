@@ -13,17 +13,22 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-
-/**
- * Hello world!
- *
- */
-public class App 
-{
+public class PizzaDronz {
+    private static final int INVALID_ARGUMENTS = 1;
+    private static final int REST_FAILURE = 2;
+    private static final int NULL_RESOURCE = 3;
+    private static final int FLIGHTPATH_CALCULATION_FAILURE = 4;
+    private static final int SERIALIZATION_FAILURE = 5;
+    private static final int SUCCESS = 0;
     public static void main( String[] args )
     {
+
         if(args.length > 2){
-            System.err.println("ERROR: Too many arguments given. Arguments should be date (yyyy-MM-dd) and REST url");
+            System.err.println("Too many arguments given. Arguments should be date (yyyy-MM-dd) and REST url.");
+            System.exit(INVALID_ARGUMENTS);
+        } else if(args.length < 2){
+            System.err.println("Missing arguments. Arguments should be date (yyyy-MM-dd) and REST url.");
+            System.exit(INVALID_ARGUMENTS);
         }
         String dateString = args[0];
         String url = args[1];
@@ -33,9 +38,8 @@ public class App
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate date = LocalDate.parse(dateString,dateFormatter);
         } catch (DateTimeParseException e){
-            System.err.println("ERROR: First argument given is not a valid date of the format yyyy-MM-dd." +
-                    "\nPlease run terminal command with a valid date");
-            System.exit(1);
+            System.err.println("First argument given is not a valid date of the format yyyy-MM-dd.");
+            System.exit(INVALID_ARGUMENTS);
         }
 
         //Validate url argument
@@ -43,9 +47,8 @@ public class App
         Pattern p = Pattern.compile(url_regex);
         Matcher matcher = p.matcher(url);
         if(!matcher.matches()){
-            System.err.println("ERROR: Second argument given is not a valid url." +
-                    "\nPlease run terminal command with a valid url");
-            System.exit(1);
+            System.err.println("Second argument given is not a valid url.");
+            System.exit(INVALID_ARGUMENTS);
         }
 
         Controller controller = new Controller(url,dateString);
@@ -54,6 +57,7 @@ public class App
         NamedRegion centralArea = null;
         Order[] unvalidatedOrders = null;
 
+        //Read resources from REST
         try {
             restaurants = controller.getDefinedRestaurantsFromREST();
             System.out.println("Read Restaurants from REST service...");
@@ -62,26 +66,31 @@ public class App
             centralArea = controller.getCentralAreaFromREST();
             System.out.println("Read Central Area from REST service...");
             unvalidatedOrders = controller.getOrdersFromREST(dateString);
-            System.out.printf("Read orders for %s from REST service...%n",dateString);
+            System.out.printf("Read orders for %s from REST service...",dateString);
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            System.exit(1);
+            System.exit(REST_FAILURE);
         }
 
         if(restaurants == null || noFlyZones == null || centralArea == null || unvalidatedOrders == null){
             System.err.println("One of the retrieved resources from the REST service is null");
-            System.exit(1);
+            System.exit(NULL_RESOURCE);
         }
 
+        //Validate orders
         Order[] validatedOrders = controller.validateOrders(unvalidatedOrders,restaurants);
+
+        //Calculate flightpahts
         List<DroneMove> flightpath = null;
         try{
             flightpath = controller.findPathsForValidOrders(validatedOrders,restaurants,noFlyZones,centralArea);
+            System.out.println("Calculated flightpath...");
         } catch (RuntimeException e){
             System.err.println(e.getMessage());
-            System.exit(1);
+            System.exit(FLIGHTPATH_CALCULATION_FAILURE);
          }
 
+        //Serialize
         try{
             controller.serializeOrders(validatedOrders);
             System.out.println("Serialized orders...");
@@ -91,10 +100,10 @@ public class App
             System.out.println("Geo-serialized flightpath...");
         } catch (IOException e) {
             System.err.println(e.getMessage());
-            System.exit(1);
+            System.exit(SERIALIZATION_FAILURE);
         }
 
-        System.out.println("Success!\nOrders validated and flightpath calculated for PizzaDronz.");
-        System.exit(0);
+        System.out.printf("Success! Orders validated and flightpath calculated for %s.",dateString);
+        System.exit(SUCCESS);
     }
 }

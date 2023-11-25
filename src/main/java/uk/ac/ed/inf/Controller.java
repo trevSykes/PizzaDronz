@@ -19,9 +19,7 @@ public class Controller {
     private final PathFinder pathFinder;
     private final LngLat AT = new LngLat(-3.186874, 55.944494);
 
-    private HashMap<String,List<DroneMove>> routeCache = new HashMap<>();
-
-    //TODO Comments
+    private final HashMap<String,List<DroneMove>> routeCache = new HashMap<>();
 
     public Controller(String restURL, String date){
         restClient = new RestGetClient(restURL);
@@ -83,7 +81,7 @@ public class Controller {
      *
      * @param unvalidatedOrders Array of Order objects that are the raw orders retrieved from the REST service
      * @param definedRestaurants Array of Restaurants objects defined by the REST service
-     * @return Array of Order objects that are unvalidatedOrders's elements with the appropriate OrderStatusCode and
+     * @return Array of Order objects that are unvalidatedOrders elements with the appropriate OrderStatusCode and
      *         OrderValidationCode set.
      */
     public Order[] validateOrders(Order[] unvalidatedOrders, Restaurant[] definedRestaurants){
@@ -92,7 +90,6 @@ public class Controller {
             Order orderToValidate = unvalidatedOrders[i];
             validatedOrders[i] = orderValidator.validateOrder(orderToValidate,definedRestaurants);
         }
-        System.out.printf("Successfully validated %s orders%n",unvalidatedOrders.length);
         return validatedOrders;
     }
 

@@ -30,12 +30,12 @@ public class OrderValidator implements OrderValidation {
         LocalDate orderDate = orderToValidate.getOrderDate();
         int priceTotalInPence = orderToValidate.getPriceTotalInPence();
 
-//        //Check for null data input
-//        try {
-//            checkForNullData(pizzasInOrder, creditCardInformation, orderDate, definedRestaurants);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e.getMessage());
-//        }
+        //Order is invalid if orderNo is null
+        if (orderToValidate.getOrderNo() == null){
+            orderToValidate.setOrderStatus(OrderStatus.INVALID);
+            orderToValidate.setOrderValidationCode(OrderValidationCode.UNDEFINED);
+            return orderToValidate;
+        }
 
         //Return order if already validated
         if (orderToValidate.getOrderValidationCode() != OrderValidationCode.UNDEFINED){
@@ -201,25 +201,7 @@ public class OrderValidator implements OrderValidation {
         String ccNumPattern = "\\d{16}";
         Pattern reg = Pattern.compile(ccNumPattern);
         Matcher matcher = reg.matcher(creditCardNumber);
-        if(!matcher.matches()){
-            return true;
-        }
-        return false;
-//        //Luhn's algorithm
-//        int n = creditCardNumber.length();
-//        int sum = 0;
-//        boolean isSecond = false;
-//        for (int i= n-1; i>=0;i--){
-//            int d = creditCardNumber.charAt(i) - '0';
-//            if(isSecond == true){
-//                d = d * 2;
-//            }
-//            sum += d/10;
-//            sum += d%10;
-//            isSecond = !isSecond;
-//        }
-//        return (sum % 10 ==0);
-
+        return !matcher.matches();
     }
 
     //Checks if CVV number is not a string of 16 digits

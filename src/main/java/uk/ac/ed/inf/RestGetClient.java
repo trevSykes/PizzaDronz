@@ -1,6 +1,5 @@
 package uk.ac.ed.inf;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -44,7 +43,8 @@ public class RestGetClient {
      */
     public Restaurant[] getRestaurants() throws IOException{
         try{
-            return mapper.readValue(new URL(baseURL+ RESTAURANTS_LOC), Restaurant[].class);
+            Restaurant[] restaurants = mapper.readValue(new URL(baseURL+ RESTAURANTS_LOC), Restaurant[].class);
+            return restaurants.length > 0 ? restaurants : null; //Return null there are no restaurants
         } catch (IOException e){
             throw new IOException("Error with retrieving REST server's Restaurants resource\n\n"+e.getMessage());
         }
@@ -70,7 +70,12 @@ public class RestGetClient {
      */
     public Order[] getOrders(String date) throws IOException{
         try{
-            return mapper.readValue(new URL(baseURL+ORDERS_LOC+'/'+date), Order[].class);
+            if (date.equals("all")){ //Used for system test
+                return mapper.readValue(new URL(baseURL+ORDERS_LOC), Order[].class);
+            } else {
+                Order[] orders = mapper.readValue(new URL(baseURL+ORDERS_LOC+'/'+date), Order[].class);
+                return orders.length > 0 ? orders : null; //Return null if there are no orders
+            }
         } catch (IOException e){
             throw new IOException("Error with parsing REST server's Orders resource\n\n"+e.getMessage());
         }
@@ -82,7 +87,8 @@ public class RestGetClient {
      */
     public NamedRegion[] getNoFlyZones() throws IOException{
         try{
-            return mapper.readValue(new URL(baseURL+NO_FLY_LOC), NamedRegion[].class);
+            NamedRegion[] noFlyZones = mapper.readValue(new URL(baseURL+NO_FLY_LOC), NamedRegion[].class);
+            return noFlyZones.length > 0 ? noFlyZones : null;
         } catch (IOException e){
             throw new IOException("Error with parsing REST server's NoFlyZone resource\n\n"+e.getMessage());
         }

@@ -23,7 +23,7 @@ public class OrderValidationTests {
     }
     @BeforeEach
     void setUp(){
-         orderValidator = new OrderValidator();
+        orderValidator = new OrderValidator();
 
         Restaurant civerinos = new Restaurant("Civerinos Slice",
                 new LngLat(-3.1912869215011597, 55.945535152517735),
@@ -98,6 +98,15 @@ public class OrderValidationTests {
         Order validatedOrder = orderValidator.validateOrder(alreadyValidatedOrder,definedRestaurants);
         Assertions.assertEquals(alreadyValidatedOrder.hashCode(),validatedOrder.hashCode());
 
+    }
+
+    @Test
+    void nullOrderNo(){
+        baseValidOrder.setOrderNo(null);
+        Order expectedValidatedOrder = cloneOrderAndAssignCodes(
+                baseValidOrder,OrderStatus.INVALID,OrderValidationCode.UNDEFINED);
+        Order validatedOrder = orderValidator.validateOrder(baseValidOrder,definedRestaurants);
+        Assertions.assertEquals(expectedValidatedOrder.hashCode(),validatedOrder.hashCode());
     }
 
     @Test
