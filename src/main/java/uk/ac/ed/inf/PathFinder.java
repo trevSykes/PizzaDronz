@@ -144,7 +144,7 @@ public class PathFinder {
                 continue;
             }
             //Skip if in a no fly zone
-            if(posIsInNoFlyZone(nextPos,noFlyZones)){
+            if(positionIsInNoFlyZone(nextPos,noFlyZones)){
                 continue;
             }
             //Skip if path between q and nextPos goes through a No-Fly Zone
@@ -198,7 +198,7 @@ public class PathFinder {
      * @param noFlyZones Array of NamedRegion objects representing No-FLy Zones
      * @return True if the position is in a No-FLy Zone
      */
-    private boolean posIsInNoFlyZone(LngLat pos,NamedRegion[] noFlyZones){
+    private boolean positionIsInNoFlyZone(LngLat pos, NamedRegion[] noFlyZones){
         for(NamedRegion noFlyZone : noFlyZones){
             if(lngLatHandler.isInRegion(pos,noFlyZone)){
                 return true;

@@ -66,15 +66,28 @@ public class PizzaDronz {
             centralArea = controller.getCentralAreaFromREST();
             System.out.println("Read Central Area from REST service...");
             unvalidatedOrders = controller.getOrdersFromREST(dateString);
-            System.out.printf("Read orders for %s from REST service...",dateString);
+            System.out.println("Read Orders from REST service...");
         } catch (Exception e) {
             System.err.println(e.getMessage());
             System.exit(REST_FAILURE);
         }
 
-        if(restaurants == null || noFlyZones == null || centralArea == null || unvalidatedOrders == null){
-            System.err.println("One of the retrieved resources from the REST service is null");
+        if(restaurants == null || noFlyZones == null || centralArea == null){
+            System.err.println("Restaurants, No-Fly Zones or Central Area from the REST service is empty");
             System.exit(NULL_RESOURCE);
+        }
+
+        /*For the special case where there are no orders for the given day, output the JSON files with empty entries
+          and terminate early*/
+        if(unvalidatedOrders == null){
+            System.out.println(String.format("No orders for %s",dateString));
+            try {
+                controller.outputEmptyFilesForNoOrders();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                System.exit(SERIALIZATION_FAILURE);
+            }
+            System.exit(SUCCESS);
         }
 
         //Validate orders

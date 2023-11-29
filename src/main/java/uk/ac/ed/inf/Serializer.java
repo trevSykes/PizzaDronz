@@ -13,6 +13,7 @@ import uk.ac.ed.inf.ilp.data.Order;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -20,6 +21,7 @@ public class Serializer {
 
     private static ObjectMapper mapper;
     private static String DATE;
+    private static String RESULTFILES_PATH;
 
     public Serializer(String date){
         DATE = date;
@@ -38,6 +40,34 @@ public class Serializer {
         orderModule.addSerializer(LineString.class, new CustomLineStringSerializer());
         orderModule.addSerializer(Properties.class, new CustomPropertiesSerializer());
         mapper.registerModule(orderModule);
+
+        //Sets an absolute path to resultfiles in the top-level of the project structure
+        RESULTFILES_PATH = configResultfilesPath();
+
+    }
+
+    /**
+     * This method is needed to set output of the Serializer to the resultfiles directory, for tests and when running
+     * uber jar
+     * @return String that is the absolute path to the result files directory
+     */
+    private String configResultfilesPath(){
+        //Isolate directories
+        String[] userDirTree = System.getProperty("user.dir").split("/");
+        userDirTree = Arrays.copyOfRange(userDirTree,1,userDirTree.length);
+        String resultFilesPath = "";
+
+        //Navigate to project folder
+        for(String dir : userDirTree){
+            resultFilesPath += (File.separator+dir);
+            if(dir.equals("PizzaDronz")){
+                break;
+            }
+        }
+        //Include the resultfiles directory
+        resultFilesPath += (File.separator+"resultfiles"+File.separator);
+        return resultFilesPath;
+
     }
 
     /**
@@ -47,9 +77,9 @@ public class Serializer {
      */
     public void serializeOrders(Order[] orders) throws IOException {
         try{
-            mapper.writeValue(new File("resultfiles/deliveries-"+DATE+".json"),orders);
+            mapper.writeValue(new File(RESULTFILES_PATH+"deliveries-"+DATE+".json"),orders);
         } catch (IOException e){
-            throw new IOException("Issue with parsing Order objects.\n\n"+e.getMessage());
+            throw new IOException("Issue with serializing Order objects.\n\n"+e.getMessage());
         }
 
     }
@@ -61,9 +91,9 @@ public class Serializer {
      */
     public void serializeFlights(List<DroneMove> moves) throws IOException {
         try{
-            mapper.writeValue(new File("resultfiles/flightpath-"+DATE+".json"),moves);
+            mapper.writeValue(new File(RESULTFILES_PATH+"flightpath-"+DATE+".json"),moves);
         } catch (IOException e){
-            throw new IOException("Issue with parsing DroneMove objects.\n\n"+e.getMessage());
+            throw new IOException("Issue with serializing DroneMove objects.\n\n"+e.getMessage());
         }
 
     }
@@ -74,11 +104,12 @@ public class Serializer {
      * @throws IOException Issue with ObjectMapper parsing FeatureCollection, Feature, LineString, or Properties objects
      */
     public void geoSerialisePaths(double[][] coordinates) throws IOException {
-        LineString path = new LineString(coordinates);
+        //When the provided coordinates are empty, LineString must be null
+        LineString path = coordinates.length > 0 ? new LineString(coordinates) : null;
         Feature pathFeature = new Feature(path,(DATE+" path"));
         FeatureCollection featureCollection = new FeatureCollection(new Feature[]{pathFeature});
         try{
-            mapper.writeValue(new File("resultfiles/drone-"+DATE+".geojson"),featureCollection);
+            mapper.writeValue(new File(RESULTFILES_PATH+"drone-"+DATE+".geojson"),featureCollection);
         } catch (IOException e){
             throw new IOException("Issue with serializing FeatureCollection, Feature, LineString, or Properties object.\n\n"
                     +e.getMessage());

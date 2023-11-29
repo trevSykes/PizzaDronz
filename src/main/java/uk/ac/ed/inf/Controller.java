@@ -100,8 +100,8 @@ public class Controller {
      * @param centralArea NamedRegion object representing the Central Area retrieved from the REST service
      * @return List of DroneMoves illustrating the drones flightpath for a given day
      */
-    public List<DroneMove> findPathsForValidOrders(Order[] validatedOrders, Restaurant[] definedRestaurants, NamedRegion[] noFlyZones,
-                                                   NamedRegion centralArea){
+    public List<DroneMove> findPathsForValidOrders(Order[] validatedOrders, Restaurant[] definedRestaurants,
+                                                   NamedRegion[] noFlyZones, NamedRegion centralArea){
         List<DroneMove> droneMoves = new ArrayList<>();
         for(Order order : validatedOrders){
             //Only calculate flight paths for valid orders
@@ -167,6 +167,12 @@ public class Controller {
     }
 
 
+    /**
+     * Converts a List of DroneMove to coordinates. Uses the coordinates to make FeatureCollection object composed of a
+     * single LineString feature that is built from the coordinates. From this a GeoJSON file is created.
+     * @param droneMoves List of DroneMoves representing the path for the entire day
+     * @throws IOException Error with writing POJOs to GeoJSON objects and writing to file
+     */
     public void geoSerializeFlightPath(List<DroneMove> droneMoves) throws IOException{
         //Convert DroneMoves to array of coordinates
         double[][] coordinates = new double[droneMoves.size()+1][2];
@@ -177,6 +183,16 @@ public class Controller {
             coordinates[i+1] = new double[]{droneMoves.get(i).getToLongitude(),droneMoves.get(i).getToLatitude()};
         }
         serializer.geoSerialisePaths(coordinates);
+    }
+
+    /**
+     * Helper function for the special case when the retrieved orders are empty; the files serialized are empty
+     * @throws IOException Error with writing POJOs to JSON and GeoJSON files.
+     */
+    public void outputEmptyFilesForNoOrders() throws IOException{
+        serializer.serializeOrders(new Order[0]);
+        serializer.serializeFlights(new ArrayList<>());
+        serializer.geoSerialisePaths(new double[0][2]);
     }
 
 }
