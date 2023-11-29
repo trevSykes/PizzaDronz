@@ -19,14 +19,12 @@ public class PizzaDronz {
     private static final int NULL_RESOURCE = 3;
     private static final int FLIGHTPATH_CALCULATION_FAILURE = 4;
     private static final int SERIALIZATION_FAILURE = 5;
+    private static final int RESULTFILES_ERROR = 6;
     private static final int SUCCESS = 0;
     public static void main( String[] args )
     {
 
-        if(args.length > 2){
-            System.err.println("Too many arguments given. Arguments should be date (yyyy-MM-dd) and REST url.");
-            System.exit(INVALID_ARGUMENTS);
-        } else if(args.length < 2){
+        if(args.length < 2){
             System.err.println("Missing arguments. Arguments should be date (yyyy-MM-dd) and REST url.");
             System.exit(INVALID_ARGUMENTS);
         }
@@ -51,7 +49,14 @@ public class PizzaDronz {
             System.exit(INVALID_ARGUMENTS);
         }
 
-        Controller controller = new Controller(url,dateString);
+        Controller controller = null;
+        //System might fail when creating resultfiles directory
+        try {
+            controller = new Controller(url,dateString);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            System.exit(RESULTFILES_ERROR);
+        }
         Restaurant[] restaurants = null;
         NamedRegion[] noFlyZones = null;
         NamedRegion centralArea = null;
@@ -97,7 +102,7 @@ public class PizzaDronz {
         List<DroneMove> flightpath = null;
         try{
             flightpath = controller.findPathsForValidOrders(validatedOrders,restaurants,noFlyZones,centralArea);
-            System.out.println("Calculated flightpath...");
+            System.out.println("Calculated flightpath for whole day...");
         } catch (RuntimeException e){
             System.err.println(e.getMessage());
             System.exit(FLIGHTPATH_CALCULATION_FAILURE);
@@ -116,7 +121,7 @@ public class PizzaDronz {
             System.exit(SERIALIZATION_FAILURE);
         }
 
-        System.out.printf("Success! Orders validated and flightpath calculated for %s.",dateString);
+        System.out.println(String.format("Success! Orders validated and flightpath calculated for %s.",dateString));
         System.exit(SUCCESS);
     }
 }

@@ -12,6 +12,9 @@ import uk.ac.ed.inf.ilp.data.Order;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +26,7 @@ public class Serializer {
     private static String DATE;
     private static String RESULTFILES_PATH;
 
-    public Serializer(String date){
+    public Serializer(String date) throws IOException{
         DATE = date;
         mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT); //Enables pretty print of files
@@ -43,6 +46,16 @@ public class Serializer {
 
         //Sets an absolute path to resultfiles in the top-level of the project structure
         RESULTFILES_PATH = configResultfilesPath();
+
+        //Check if there is a resultfile directory, create one if not
+        Path resultfilesPath = Paths.get(RESULTFILES_PATH);
+        if(!(Files.exists(resultfilesPath) && Files.isDirectory(resultfilesPath))){
+            try {
+                Files.createDirectories(resultfilesPath);
+            } catch (IOException e) {
+                throw new IOException("Issue with making 'resultfile' directory\n\n"+e.getMessage());
+            }
+        }
 
     }
 
@@ -65,7 +78,7 @@ public class Serializer {
             }
         }
         //Include the resultfiles directory
-        resultFilesPath += (File.separator+"resultfiles"+File.separator);
+        resultFilesPath += (File.separator+"resultfiles");
         return resultFilesPath;
 
     }
@@ -77,7 +90,7 @@ public class Serializer {
      */
     public void serializeOrders(Order[] orders) throws IOException {
         try{
-            mapper.writeValue(new File(RESULTFILES_PATH+"deliveries-"+DATE+".json"),orders);
+            mapper.writeValue(new File(RESULTFILES_PATH+"/deliveries-"+DATE+".json"),orders);
         } catch (IOException e){
             throw new IOException("Issue with serializing Order objects.\n\n"+e.getMessage());
         }
@@ -91,7 +104,7 @@ public class Serializer {
      */
     public void serializeFlights(List<DroneMove> moves) throws IOException {
         try{
-            mapper.writeValue(new File(RESULTFILES_PATH+"flightpath-"+DATE+".json"),moves);
+            mapper.writeValue(new File(RESULTFILES_PATH+"/flightpath-"+DATE+".json"),moves);
         } catch (IOException e){
             throw new IOException("Issue with serializing DroneMove objects.\n\n"+e.getMessage());
         }
@@ -109,7 +122,7 @@ public class Serializer {
         Feature pathFeature = new Feature(path,(DATE+" path"));
         FeatureCollection featureCollection = new FeatureCollection(new Feature[]{pathFeature});
         try{
-            mapper.writeValue(new File(RESULTFILES_PATH+"drone-"+DATE+".geojson"),featureCollection);
+            mapper.writeValue(new File(RESULTFILES_PATH+"/drone-"+DATE+".geojson"),featureCollection);
         } catch (IOException e){
             throw new IOException("Issue with serializing FeatureCollection, Feature, LineString, or Properties object.\n\n"
                     +e.getMessage());

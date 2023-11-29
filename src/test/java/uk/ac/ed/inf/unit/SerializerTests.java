@@ -12,6 +12,7 @@ import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Pizza;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SerializerTests {
     private static final LngLatHandler lngLatHandler = new LngLatHandler();
     private static final LngLat AT = new LngLat(-3.186874,55.944494);
-    private static final Serializer serializer = new Serializer("2023-02-30-TEST");
+    private static final Serializer serializer;
+
+    static {
+        try {
+            serializer = new Serializer("TEST");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
     void generateDeliveries(){
@@ -43,7 +52,7 @@ public class SerializerTests {
                 new CreditCardInformation("ccNum","10/60","123"));
         try {
             serializer.serializeOrders(new Order[]{order1,order2});
-            File f = new File("resultfiles/deliveries-2023-02-30-TEST.json");
+            File f = new File("resultfiles/deliveries-TEST.json");
             assertTrue(f.exists());
         } catch (Exception e){
             System.err.println(e.getMessage());
@@ -59,7 +68,7 @@ public class SerializerTests {
         List<DroneMove> moves = new ArrayList<>(List.of((new DroneMove[]{move1, move2})));
         try{
             serializer.serializeFlights(moves);
-            File f = new File("resultfiles/flightpath-2023-02-30-TEST.json");
+            File f = new File("resultfiles/flightpath-TEST.json");
             assertTrue(f.exists());
         } catch (Exception e){
             System.err.println(e.getMessage());
@@ -81,7 +90,7 @@ public class SerializerTests {
         }
         try{
             serializer.geoSerialisePaths(coordinates);
-            File f = new File("resultfiles/drone-2023-02-30-TEST.geojson");
+            File f = new File("resultfiles/drone-TEST.geojson");
             assertTrue(f.exists());
         } catch (Exception e){
             System.err.println(e.getMessage());

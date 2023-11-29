@@ -21,7 +21,7 @@ public class Controller {
 
     private final HashMap<String,List<DroneMove>> routeCache = new HashMap<>();
 
-    public Controller(String restURL, String date){
+    public Controller(String restURL, String date) throws IOException {
         restClient = new RestGetClient(restURL);
         orderValidator = new OrderValidator();
         pathFinder = new PathFinder();
