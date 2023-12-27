@@ -16,7 +16,7 @@ I thoroughly enjoyed the process we were guided along for this coursework. It wa
 The Jackson API was invaluable when it came to deserialising REST server data and serialising the required output files. For the pathfiner, I utitlised an adjusted A-star search algorithm --- a key concept from my Year 2 course Reasoning and Agents.
 
 
-My main takeaways from this was how to create a project that used intentional structure and design to meet requirements; as well as learning how to utilise Maven to build a functional Java application.
+My main takeaways from this was how to create a project that used intentional structure and design to meet requirements, as well as learning how to utilise Maven to build a functional Java application.
 
 # Details
 
