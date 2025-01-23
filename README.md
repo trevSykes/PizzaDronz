@@ -20,7 +20,7 @@ My main takeaways from this was how to create a project that used intentional st
 
 # Details
 
-Grade: TBD
+Grade: 83% (A2)
 
 Programming Language: Java
 
